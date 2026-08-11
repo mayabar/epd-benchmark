@@ -1,0 +1,14 @@
+Log Collection Summary
+======================
+Namespace: mayab-2
+Time Period: Last 30 minutes
+Collection Time: Tue Jul 21 12:21:08 IDT 2026
+Total Pods: 4
+
+Collected Logs:
+---------------
+  prometheus-778758dfcf-zfkf6/prometheus.log: 0 lines,   0B
+  e-disaggregation-epp-5f6498699-7cvz5/envoy-proxy.log: 0 lines,   0B
+  e-disaggregation-epp-5f6498699-7cvz5/epp.log: 0 lines,   0B
+  sglang-bench-bdzw5/bench.log: 0 lines,   0B
+  grafana-5ff7df756d-5lc29/grafana.log: 32 lines,  12K

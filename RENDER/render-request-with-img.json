@@ -1,0 +1,20 @@
+{
+  "model": "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "What animal is shown in this image?"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "http://images.cocodataset.org/val2017/000000039769.jpg"
+          }
+        }
+      ]
+    }
+  ]
+}

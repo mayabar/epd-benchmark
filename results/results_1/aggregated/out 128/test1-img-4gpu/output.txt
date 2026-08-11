@@ -1,0 +1,82 @@
+[Tue Jul 21 09:03:33 AM UTC 2026] Waiting for http://aggregation-epp:80/v1/models ...
+  Attempt 1/40 failed, retrying in 15s...
+Mac:llm-d mayab$ k logs -f job/sglang-bench -n mayab-1
+[Tue Jul 21 09:14:40 AM UTC 2026] Waiting for http://aggregation-epp:80/v1/models ...
+  Endpoint up.
+
+[Tue Jul 21 09:14:40 AM UTC 2026] === Rate 20 ===
+/usr/local/lib/python3.12/dist-packages/torchao/quantization/quant_api.py:1731: SyntaxWarning: invalid escape sequence '\.'
+  """Configuration class for applying different quantization configs to modules or parameters based on their fully qualified names (FQNs).
+/sgl-workspace/sglang/python/sglang/srt/layers/attention/fla/utils.py:223: UserWarning: Triton is not supported on current platform, roll back to CPU.
+  warnings.warn(
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+/sgl-workspace/sglang/python/sglang/benchmark/datasets/image.py:51: UserWarning: High resolution (1920x1080) with 1200 total images may take a long time. Consider reducing resolution or image count.
+  return sample_image_requests(
+benchmark_args=Namespace(backend='sglang-oai-chat', base_url=None, host='aggregation-epp', port=80, ready_check_timeout_sec=60, dataset_name='image', dataset_path='', speed_bench_category=None, speed_bench_output_len=512, model='Qwen/Qwen3-VL-235B-A22B-Instruct-FP8', served_model_name=None, tokenizer=None, num_prompts=1200, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=128, random_output_len=128, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='blank', request_rate=20.0, use_trace_timestamps=False, max_concurrency=None, output_file=None, output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, top_logprobs_num=0, token_ids_logprob=None, logprob_start_len=-1, return_routed_experts=False, cache_report=False, seed=42, disable_ignore_eos=False, temperature=0.0, top_p=1.0, extra_request_body='{"ignore_eos": true}', apply_chat_template=False, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_start_step=None, profile_steps=None, profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, gsp_group_distribution='uniform', gsp_zipf_alpha=None, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', fake_prefill=False, tag=None, header=None)
+Waiting up to 60s for http://aggregation-epp:80/v1/models to become ready...
+Server ready in 0.0s.
+Namespace(backend='sglang-oai-chat', base_url=None, host='aggregation-epp', port=80, ready_check_timeout_sec=60, dataset_name='image', dataset_path='', speed_bench_category=None, speed_bench_output_len=512, model='Qwen/Qwen3-VL-235B-A22B-Instruct-FP8', served_model_name=None, tokenizer=None, num_prompts=1200, sharegpt_output_len=None, sharegpt_context_len=None, random_input_len=128, random_output_len=128, random_range_ratio=1.0, image_count=1, image_resolution='1080p', random_image_count=False, image_format='jpeg', image_content='blank', request_rate=20.0, use_trace_timestamps=False, max_concurrency=None, output_file=None, output_details=False, print_requests=False, disable_tqdm=False, disable_stream=False, return_logprob=False, top_logprobs_num=0, token_ids_logprob=None, logprob_start_len=-1, return_routed_experts=False, cache_report=False, seed=42, disable_ignore_eos=False, temperature=0.0, top_p=1.0, extra_request_body='{"ignore_eos": true}', apply_chat_template=True, profile=False, plot_throughput=False, profile_activities=['CPU', 'GPU'], profile_start_step=None, profile_steps=None, profile_num_steps=None, profile_by_stage=False, profile_stages=None, profile_output_dir=None, profile_prefix=None, lora_name=None, lora_request_distribution='uniform', lora_zipf_alpha=1.5, prompt_suffix='', pd_separated=False, profile_prefill_url=None, profile_decode_url=None, flush_cache=False, warmup_requests=1, tokenize_prompt=False, gsp_num_groups=64, gsp_prompts_per_group=16, gsp_system_prompt_len=2048, gsp_question_len=128, gsp_output_len=256, gsp_range_ratio=1.0, gsp_fast_prepare=False, gsp_send_routing_key=False, gsp_num_turns=1, gsp_ordered=False, gsp_group_distribution='uniform', gsp_zipf_alpha=None, mooncake_slowdown_factor=1.0, mooncake_num_rounds=1, mooncake_workload='conversation', fake_prefill=False, tag=None, header=None)
+
+#Input tokens: 2621617
+#Output tokens: 153600
+#Total images: 1200
+#Images per request: 1 (fixed)
+
+=== Token Breakdown (per request avg / total) ===
+  Raw text prompt tokens (without overhead): avg=128.0, total=153600
+  Text prompt tokens (with chat template): avg=142.7, total=171217
+  Text prompt overhead: avg=14.7, total=17617
+  Vision tokens: avg=2042.0, total=2450400
+
+Created 1200 blank jpeg images with average 44379 bytes per request
+Starting warmup with 1 sequences...
+Warmup completed with 1 sequences. Starting main benchmark run...
+100%|██████████| 1200/1200 [01:56<00:00, 10.28it/s]
+
+============ Serving Benchmark Result ============
+Backend:                                 sglang-oai-chat
+Traffic request rate:                    20.0      
+Max request concurrency:                 not set   
+Successful requests:                     1200      
+Benchmark duration (s):                  116.70    
+Total input tokens:                      2621617   
+Total input text tokens:                 171217    
+Total input vision tokens:               2450400   
+Total generated tokens:                  153600    
+Total generated tokens (retokenized):    152048    
+Request throughput (req/s):              10.28     
+Input token throughput (tok/s):          22463.89  
+Output token throughput (tok/s):         1316.15   
+Peak output token throughput (tok/s):    1831.00   
+Peak concurrent requests:                654       
+Total token throughput (tok/s):          23780.05  
+Concurrency:                             347.38    
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   33784.02  
+Median E2E Latency (ms):                 34138.72  
+P90 E2E Latency (ms):                    53591.50  
+P95 E2E Latency (ms):                    55583.36  
+P99 E2E Latency (ms):                    55956.50  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          29701.51  
+Median TTFT (ms):                        30063.46  
+P90 TTFT (ms):                           49361.68  
+P95 TTFT (ms):                           51371.01  
+P99 TTFT (ms):                           52591.52  
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          32.15     
+Median TPOT (ms):                        32.28     
+P90 TPOT (ms):                           34.73     
+P95 TPOT (ms):                           35.13     
+P99 TPOT (ms):                           36.04     
+---------------Inter-Token Latency----------------
+Mean ITL (ms):                           32.90     
+Median ITL (ms):                         35.12     
+P90 ITL (ms):                            66.61     
+P95 ITL (ms):                            68.79     
+P99 ITL (ms):                            81.10     
+Max ITL (ms):                            459.26    
+==================================================
+[Tue Jul 21 09:20:53 AM UTC 2026] Rate 20 done.
+[Tue Jul 21 09:20:53 AM UTC 2026] All rates complete.

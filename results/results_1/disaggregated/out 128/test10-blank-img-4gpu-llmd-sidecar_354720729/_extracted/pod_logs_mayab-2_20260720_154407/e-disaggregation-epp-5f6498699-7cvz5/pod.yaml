@@ -1,0 +1,320 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2026-07-13T06:49:07Z"
+  generateName: e-disaggregation-epp-5f6498699-
+  generation: 1
+  labels:
+    llm-d-router-gateway: e-disaggregation-epp
+    llm-d.ai/igw-mode: llm-d-router-gateway
+    pod-template-hash: 5f6498699
+    topology.kubernetes.io/region: US-EAST-01
+    topology.kubernetes.io/zone: "185"
+  name: e-disaggregation-epp-5f6498699-7cvz5
+  namespace: mayab-2
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: e-disaggregation-epp-5f6498699
+    uid: 424161d5-79fe-4979-a474-0fac29d726f3
+  resourceVersion: "26835551"
+  uid: 2a6bfcd9-4462-42ca-b574-56cfbf9752d3
+spec:
+  containers:
+  - args:
+    - --service-node
+    - envoy-sidecar
+    - --log-level
+    - warn
+    - --concurrency
+    - "8"
+    - --drain-strategy
+    - immediate
+    - --drain-time-s
+    - "60"
+    - -c
+    - /etc/envoy/envoy.yaml
+    command:
+    - envoy
+    env:
+    - name: NS_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    image: docker.io/envoyproxy/envoy:distroless-v1.33.2
+    imagePullPolicy: IfNotPresent
+    name: envoy-proxy
+    ports:
+    - containerPort: 8081
+      name: http-8081
+      protocol: TCP
+    - containerPort: 19001
+      name: metrics-19001
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 1
+      httpGet:
+        path: /ready
+        port: 19001
+        scheme: HTTP
+      periodSeconds: 5
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      limits:
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/envoy
+      name: config
+      readOnly: true
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-62mz2
+      readOnly: true
+  - args:
+    - --pool-name
+    - e-disaggregation
+    - --pool-namespace
+    - mayab-2
+    - --pool-group
+    - inference.networking.k8s.io
+    - --zap-encoder
+    - json
+    - --config-file
+    - /config/e-pd-config.yaml
+    - --grpc-health-port
+    - "9003"
+    - --v=2
+    - --tracing=false
+    env:
+    - name: NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    image: ghcr.io/llm-d/llm-d-router-endpoint-picker:v0.9.0
+    imagePullPolicy: IfNotPresent
+    livenessProbe:
+      failureThreshold: 3
+      grpc:
+        port: 9003
+        service: inference-extension
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    name: epp
+    ports:
+    - containerPort: 9002
+      name: grpc
+      protocol: TCP
+    - containerPort: 9003
+      name: grpc-health
+      protocol: TCP
+    - containerPort: 9090
+      name: metrics
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      grpc:
+        port: 9003
+        service: inference-extension
+      periodSeconds: 2
+      successThreshold: 1
+      timeoutSeconds: 1
+    resources:
+      limits:
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /config
+      name: plugins-config-volume
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-62mz2
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: g801c7a
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: e-disaggregation-epp
+  serviceAccountName: e-disaggregation-epp
+  terminationGracePeriodSeconds: 130
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - configMap:
+      defaultMode: 420
+      items:
+      - key: envoy.yaml
+        path: envoy.yaml
+      name: envoy
+    name: config
+  - configMap:
+      defaultMode: 420
+      name: e-disaggregation-epp
+    name: plugins-config-volume
+  - name: kube-api-access-62mz2
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  allocatedResources:
+    cpu: "8"
+    memory: 16Gi
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T06:49:08Z"
+    observedGeneration: 1
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T06:49:07Z"
+    observedGeneration: 1
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T06:49:09Z"
+    observedGeneration: 1
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T06:49:09Z"
+    observedGeneration: 1
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T06:49:07Z"
+    observedGeneration: 1
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "4"
+      memory: 8Gi
+    containerID: containerd://b4c7bfd639c6e91f75c304cb50e380d40454f74ff0704ee2976d6bd9696eac4d
+    image: docker.io/envoyproxy/envoy:distroless-v1.33.2
+    imageID: docker.io/envoyproxy/envoy@sha256:85500e28ed088ec39ff0adc1be3d358a8ad062926aaa62c36b28bde00919e4e8
+    lastState: {}
+    name: envoy-proxy
+    ready: true
+    resources:
+      limits:
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2026-07-13T06:49:08Z"
+    user:
+      linux:
+        gid: 65532
+        supplementalGroups:
+        - 65532
+        uid: 65532
+    volumeMounts:
+    - mountPath: /etc/envoy
+      name: config
+      readOnly: true
+      recursiveReadOnly: Disabled
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-62mz2
+      readOnly: true
+      recursiveReadOnly: Disabled
+  - allocatedResources:
+      cpu: "4"
+      memory: 8Gi
+    containerID: containerd://0ba07e50d3dc2445b30a93621eb75f5cbcc753e929bb25d419e71002c968fd82
+    image: ghcr.io/llm-d/llm-d-router-endpoint-picker:v0.9.0
+    imageID: ghcr.io/llm-d/llm-d-router-endpoint-picker@sha256:873179822ab0895a37ea09f2112ca39a6ae50a26612561c8bfad7f9a8c5af6f5
+    lastState: {}
+    name: epp
+    ready: true
+    resources:
+      limits:
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2026-07-13T06:49:08Z"
+    user:
+      linux:
+        gid: 65532
+        supplementalGroups:
+        - 65532
+        uid: 65532
+    volumeMounts:
+    - mountPath: /config
+      name: plugins-config-volume
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-62mz2
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 10.202.212.51
+  hostIPs:
+  - ip: 10.202.212.51
+  observedGeneration: 1
+  phase: Running
+  podIP: 10.0.12.56
+  podIPs:
+  - ip: 10.0.12.56
+  qosClass: Burstable
+  resources:
+    limits:
+      memory: 32Gi
+    requests:
+      cpu: 7990m
+      memory: 16Gi
+  startTime: "2026-07-13T06:49:07Z"

@@ -1,0 +1,120 @@
+Name:             e-disaggregation-epp-5f6498699-7cvz5
+Namespace:        mayab-2
+Priority:         0
+Service Account:  e-disaggregation-epp
+Node:             g801c7a/10.202.212.51
+Start Time:       Mon, 13 Jul 2026 09:49:07 +0300
+Labels:           llm-d-router-gateway=e-disaggregation-epp
+                  llm-d.ai/igw-mode=llm-d-router-gateway
+                  pod-template-hash=5f6498699
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=185
+Annotations:      <none>
+Status:           Running
+IP:               10.0.12.56
+IPs:
+  IP:           10.0.12.56
+Controlled By:  ReplicaSet/e-disaggregation-epp-5f6498699
+Containers:
+  envoy-proxy:
+    Container ID:  containerd://b4c7bfd639c6e91f75c304cb50e380d40454f74ff0704ee2976d6bd9696eac4d
+    Image:         docker.io/envoyproxy/envoy:distroless-v1.33.2
+    Image ID:      docker.io/envoyproxy/envoy@sha256:85500e28ed088ec39ff0adc1be3d358a8ad062926aaa62c36b28bde00919e4e8
+    Ports:         8081/TCP (http-8081), 19001/TCP (metrics-19001)
+    Host Ports:    0/TCP (http-8081), 0/TCP (metrics-19001)
+    Command:
+      envoy
+    Args:
+      --service-node
+      envoy-sidecar
+      --log-level
+      warn
+      --concurrency
+      8
+      --drain-strategy
+      immediate
+      --drain-time-s
+      60
+      -c
+      /etc/envoy/envoy.yaml
+    State:          Running
+      Started:      Mon, 13 Jul 2026 09:49:08 +0300
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      memory:  16Gi
+    Requests:
+      cpu:      4
+      memory:   8Gi
+    Readiness:  http-get http://:19001/ready delay=0s timeout=1s period=5s #success=1 #failure=1
+    Environment:
+      NS_NAME:   mayab-2 (v1:metadata.namespace)
+      POD_NAME:  e-disaggregation-epp-5f6498699-7cvz5 (v1:metadata.name)
+    Mounts:
+      /etc/envoy from config (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-62mz2 (ro)
+  epp:
+    Container ID:  containerd://0ba07e50d3dc2445b30a93621eb75f5cbcc753e929bb25d419e71002c968fd82
+    Image:         ghcr.io/llm-d/llm-d-router-endpoint-picker:v0.9.0
+    Image ID:      ghcr.io/llm-d/llm-d-router-endpoint-picker@sha256:873179822ab0895a37ea09f2112ca39a6ae50a26612561c8bfad7f9a8c5af6f5
+    Ports:         9002/TCP (grpc), 9003/TCP (grpc-health), 9090/TCP (metrics)
+    Host Ports:    0/TCP (grpc), 0/TCP (grpc-health), 0/TCP (metrics)
+    Args:
+      --pool-name
+      e-disaggregation
+      --pool-namespace
+      mayab-2
+      --pool-group
+      inference.networking.k8s.io
+      --zap-encoder
+      json
+      --config-file
+      /config/e-pd-config.yaml
+      --grpc-health-port
+      9003
+      --v=2
+      --tracing=false
+    State:          Running
+      Started:      Mon, 13 Jul 2026 09:49:08 +0300
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      memory:  16Gi
+    Requests:
+      cpu:      4
+      memory:   8Gi
+    Liveness:   grpc <pod>:9003 inference-extension delay=5s timeout=1s period=10s #success=1 #failure=3
+    Readiness:  grpc <pod>:9003 inference-extension delay=0s timeout=1s period=2s #success=1 #failure=3
+    Environment:
+      NAMESPACE:  mayab-2 (v1:metadata.namespace)
+      POD_NAME:   e-disaggregation-epp-5f6498699-7cvz5 (v1:metadata.name)
+    Mounts:
+      /config from plugins-config-volume (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-62mz2 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  config:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      envoy
+    Optional:  false
+  plugins-config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      e-disaggregation-epp
+    Optional:  false
+  kube-api-access-62mz2:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>

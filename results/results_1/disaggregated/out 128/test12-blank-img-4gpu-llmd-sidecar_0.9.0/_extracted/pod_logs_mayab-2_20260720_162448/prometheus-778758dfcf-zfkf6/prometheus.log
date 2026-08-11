@@ -1,0 +1,6 @@
+time=2026-07-20T13:00:24.619Z level=INFO source=compact.go:590 msg="write block started" component=tsdb mint=1784541611942 maxt=1784548800000 ulid=01KXZST15BP49TXNNNTQQ8BY6W
+time=2026-07-20T13:00:24.632Z level=INFO source=compact.go:627 msg="write block completed" component=tsdb mint=1784541611942 maxt=1784548800000 ulid=01KXZST15BP49TXNNNTQQ8BY6W duration=13.554518ms ooo=false
+time=2026-07-20T13:00:24.633Z level=INFO source=head.go:1518 msg="Head GC started" component=tsdb caller=truncateMemory
+time=2026-07-20T13:00:24.636Z level=INFO source=head.go:1522 msg="Head GC completed" component=tsdb caller=truncateMemory duration=3.297963ms
+time=2026-07-20T13:00:24.636Z level=INFO source=checkpoint.go:109 msg="Creating checkpoint" component=tsdb from_segment=14 to_segment=15 mint=1784548800000
+time=2026-07-20T13:00:24.640Z level=INFO source=head.go:1483 msg="WAL checkpoint complete" component=tsdb first=14 last=15 duration=4.304012ms

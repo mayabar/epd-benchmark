@@ -1,0 +1,62 @@
+Name:             prometheus-778758dfcf-zfkf6
+Namespace:        mayab-2
+Priority:         0
+Service Account:  prometheus-sa
+Node:             g801c7a/10.202.212.51
+Start Time:       Mon, 13 Jul 2026 11:23:21 +0300
+Labels:           app=prometheus
+                  pod-template-hash=778758dfcf
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=185
+Annotations:      <none>
+Status:           Running
+IP:               10.0.12.66
+IPs:
+  IP:           10.0.12.66
+Controlled By:  ReplicaSet/prometheus-778758dfcf
+Containers:
+  prometheus:
+    Container ID:  containerd://9921998eb17ac4c5689ca5833cc95fee21639a2780175cd7f4e5916a4a8bddc5
+    Image:         prom/prometheus:latest
+    Image ID:      docker.io/prom/prometheus@sha256:3c42b892cf723fa54d2f262c37a0e1f80aa8c8ddb1da7b9b0df9455a35a7f893
+    Port:          9090/TCP
+    Host Port:     0/TCP
+    Args:
+      --config.file=/etc/prometheus/prometheus.yml
+      --storage.tsdb.path=/prometheus
+    State:          Running
+      Started:      Mon, 13 Jul 2026 11:23:23 +0300
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /etc/prometheus from config-volume (rw)
+      /prometheus from data (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-7z7hc (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  config-volume:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      prometheus-config
+    Optional:  false
+  data:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-7z7hc:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>

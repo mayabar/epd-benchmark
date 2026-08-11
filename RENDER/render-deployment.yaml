@@ -1,0 +1,98 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-render
+  labels:
+    app: vllm-render
+    llm-d.ai/role: render
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-render
+  template:
+    metadata:
+      labels:
+        app: vllm-render
+        llm-d.ai/role: render
+    spec:
+      containers:
+        - name: modelserver
+          image: vllm/vllm-openai-cpu:v0.25.1
+          imagePullPolicy: IfNotPresent
+          command: ["vllm"]
+          args:
+            - "launch"
+            - "render"
+            - "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8"
+            - "--port=8082"
+          env:
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: llm-d-hf-token
+                  key: HF_TOKEN
+                  optional: true
+            - name: VLLM_LOGGING_LEVEL
+              value: INFO
+          ports:
+            - name: http
+              containerPort: 8082
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "4"
+              memory: 16Gi
+            limits:
+              cpu: "8"
+              memory: 32Gi
+          volumeMounts:
+            - mountPath: /dev/shm
+              name: shm
+            - mountPath: /.cache
+              name: hf-cache
+          startupProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /v1/models
+              port: http
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+      volumes:
+        - name: shm
+          emptyDir:
+            medium: Memory
+            sizeLimit: 4Gi
+        - name: hf-cache
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm-render
+  labels:
+    app: vllm-render
+spec:
+  type: ClusterIP
+  selector:
+    app: vllm-render
+  ports:
+    - name: http
+      port: 8082
+      targetPort: http
+      protocol: TCP

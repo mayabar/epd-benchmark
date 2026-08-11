@@ -1,0 +1,17 @@
+Log Collection Summary
+======================
+Namespace: mayab-2
+Time Period: Last 30 minutes
+Collection Time: Mon Jul 20 15:44:37 IDT 2026
+Total Pods: 6
+
+Collected Logs:
+---------------
+  prometheus-778758dfcf-zfkf6/prometheus.log: 0 lines,   0B
+  e-pd-disaggregation-nvidia-gpu-vllm-decode-55c6c676fb-hxlfl/modelserver.log: 29290 lines, 5.2M
+  e-pd-disaggregation-nvidia-gpu-vllm-decode-55c6c676fb-hxlfl/routing-proxy.log: 1204 lines, 256K
+  sglang-bench-gmbh9/bench.log: 79 lines,  32K
+  e-pd-disaggregation-nvidia-gpu-vllm-encode-6c7bcfb79-bhvhj/modelserver.log: 6387 lines, 1.0M
+  e-disaggregation-epp-5f6498699-7cvz5/envoy-proxy.log: 1206 lines,  76K
+  e-disaggregation-epp-5f6498699-7cvz5/epp.log: 3632 lines, 736K
+  grafana-5ff7df756d-5lc29/grafana.log: 32 lines,  12K

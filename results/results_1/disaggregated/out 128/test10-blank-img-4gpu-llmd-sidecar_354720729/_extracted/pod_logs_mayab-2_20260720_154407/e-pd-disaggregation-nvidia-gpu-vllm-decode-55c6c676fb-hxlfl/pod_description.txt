@@ -1,0 +1,130 @@
+Name:             e-pd-disaggregation-nvidia-gpu-vllm-decode-55c6c676fb-hxlfl
+Namespace:        mayab-2
+Priority:         0
+Service Account:  e-pd-disaggregation-nvidia-gpu-vllm-sa
+Node:             g12987a/10.202.208.181
+Start Time:       Mon, 20 Jul 2026 15:21:45 +0300
+Labels:           llm-d.ai/accelerator-variant=gpu
+                  llm-d.ai/accelerator-vendor=nvidia
+                  llm-d.ai/engine-type=vllm
+                  llm-d.ai/guide=e-disaggregation
+                  llm-d.ai/model=Qwen3-VL-235B-A22B-Instruct-FP8
+                  llm-d.ai/role=decode
+                  pod-template-hash=55c6c676fb
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=217
+Annotations:      <none>
+Status:           Running
+IP:               10.0.10.58
+IPs:
+  IP:           10.0.10.58
+Controlled By:  ReplicaSet/e-pd-disaggregation-nvidia-gpu-vllm-decode-55c6c676fb
+Init Containers:
+  routing-proxy:
+    Container ID:  containerd://53b92ec70e2ea616db061052ed23d69d20693d0a3bdeece86c62eadf34455fc5
+    Image:         ghcr.io/roytman/llm-d-routing-sidecar:354720729
+    Image ID:      ghcr.io/roytman/llm-d-routing-sidecar@sha256:f8bd76a7316e8e44379a43a9d53eb79e0e55b1c8987d4266e62f36283a70b18a
+    Port:          8000/TCP (sidecar)
+    Host Port:     0/TCP (sidecar)
+    Args:
+      --port=8000
+      --vllm-port=8200
+      --kv-connector=nixlv2
+      --ec-connector=ec-nixl
+      --zap-log-level=1
+      --secure-proxy=false
+    State:          Running
+      Started:      Mon, 20 Jul 2026 15:21:53 +0300
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:         <none>
+Containers:
+  modelserver:
+    Container ID:  containerd://0d6b3b3b41fa65d8b70618310c1ef28a63666d88ca7913bca8f7cbc6b29d0dbe
+    Image:         ghcr.io/revit13/vllm-openai:61e53561a
+    Image ID:      ghcr.io/revit13/vllm-openai@sha256:a43abd72a569f25ef3d2bb9ae3bcfb3dce5470c5feb62c76e98a6e6d8d2fe084
+    Ports:         8200/TCP (modelserver), 5600/TCP (nixl)
+    Host Ports:    0/TCP (modelserver), 0/TCP (nixl)
+    Command:
+      vllm
+      serve
+    Args:
+      Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+      --disable-access-log-for-endpoints=/health,/metrics,/v1/models
+      --tensor-parallel-size=4
+      --max-model-len=20480
+      --port=8200
+      --ec-transfer-config
+      {"ec_connector": "ECCPUConnector", "ec_role": "ec_consumer", "ec_connector_extra_config": {"num_ec_blocks": 500000}}
+    State:          Running
+      Started:      Mon, 20 Jul 2026 15:23:46 +0300
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:             16
+      memory:          512Gi
+      nvidia.com/gpu:  4
+    Requests:
+      cpu:             16
+      memory:          256Gi
+      nvidia.com/gpu:  4
+    Liveness:          http-get http://:modelserver/health delay=0s timeout=5s period=10s #success=1 #failure=3
+    Readiness:         http-get http://:modelserver/v1/models delay=0s timeout=2s period=5s #success=1 #failure=3
+    Startup:           http-get http://:modelserver/v1/models delay=15s timeout=5s period=30s #success=1 #failure=120
+    Environment:
+      HF_HOME:             /model-cache
+      USER:                llm-d
+      VLLM_LOGGING_LEVEL:  DEBUG
+    Mounts:
+      /.cache from torch-compile-cache (rw)
+      /.config from config-cache (rw)
+      /.triton from triton-cache (rw)
+      /dev/shm from shm (rw)
+      /model-cache from model-cache (rw)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  shm:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  90Gi
+  torch-compile-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  triton-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  config-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  model-cache:
+    Type:        PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:   e-pd-disaggregation-nvidia-gpu-vllm-model-cache
+    ReadOnly:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason                  Age                 From                     Message
+  ----     ------                  ----                ----                     -------
+  Normal   Scheduled               22m                 default-scheduler        Successfully assigned mayab-2/e-pd-disaggregation-nvidia-gpu-vllm-decode-55c6c676fb-hxlfl to g12987a
+  Normal   SuccessfulAttachVolume  22m                 attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-3bdd92a5-b336-4c21-a4ad-47396639cd25"
+  Normal   Pulling                 22m                 kubelet                  spec.initContainers{routing-proxy}: Pulling image "ghcr.io/roytman/llm-d-routing-sidecar:354720729"
+  Normal   Pulled                  22m                 kubelet                  spec.initContainers{routing-proxy}: Successfully pulled image "ghcr.io/roytman/llm-d-routing-sidecar:354720729" in 1.792s (1.792s including waiting). Image size: 15410158 bytes.
+  Normal   Created                 22m                 kubelet                  spec.initContainers{routing-proxy}: Container created
+  Normal   Started                 22m                 kubelet                  spec.initContainers{routing-proxy}: Container started
+  Normal   Pulling                 22m                 kubelet                  spec.containers{modelserver}: Pulling image "ghcr.io/revit13/vllm-openai:61e53561a"
+  Normal   Pulled                  20m                 kubelet                  spec.containers{modelserver}: Successfully pulled image "ghcr.io/revit13/vllm-openai:61e53561a" in 1m51.782s (1m51.782s including waiting). Image size: 9088460956 bytes.
+  Normal   Created                 20m                 kubelet                  spec.containers{modelserver}: Container created
+  Normal   Started                 20m                 kubelet                  spec.containers{modelserver}: Container started
+  Warning  Unhealthy               13m (x14 over 19m)  kubelet                  spec.containers{modelserver}: Startup probe failed: Get "http://10.0.10.58:8200/v1/models": dial tcp 10.0.10.58:8200: connect: connection refused

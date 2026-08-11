@@ -1,0 +1,63 @@
+
+#Input tokens: 3276889
+#Output tokens: 192000
+#Total images: 1500
+#Images per request: 1 (fixed)
+
+=== Token Breakdown (per request avg / total) ===
+  Raw text prompt tokens (without overhead): avg=128.0, total=192000
+  Text prompt tokens (with chat template): avg=142.6, total=213889
+  Text prompt overhead: avg=14.6, total=21889
+  Vision tokens: avg=2042.0, total=3063000
+
+Created 1500 random jpeg images with average 2089839 bytes per request
+Starting warmup with 1 sequences...
+Warmup completed with 1 sequences. Starting main benchmark run...
+100%|██████████| 1500/1500 [05:32<00:00,  4.51it/s]
+
+============ Serving Benchmark Result ============
+Backend:                                 sglang-oai-chat
+Traffic request rate:                    5.0       
+Max request concurrency:                 not set   
+Successful requests:                     1500      
+Benchmark duration (s):                  332.74    
+Total input tokens:                      3276889   
+Total input text tokens:                 213889    
+Total input vision tokens:               3063000   
+Total generated tokens:                  192000    
+Total generated tokens (retokenized):    190863    
+Request throughput (req/s):              4.51      
+Input token throughput (tok/s):          9848.27   
+Output token throughput (tok/s):         577.03    
+Peak output token throughput (tok/s):    1874.00   
+Peak concurrent requests:                165       
+Total token throughput (tok/s):          10425.30  
+Concurrency:                             110.30    
+----------------End-to-End Latency----------------
+Mean E2E Latency (ms):                   24468.34  
+Median E2E Latency (ms):                 26914.80  
+P90 E2E Latency (ms):                    31779.38  
+P95 E2E Latency (ms):                    32580.70  
+P99 E2E Latency (ms):                    33858.24  
+---------------Time to First Token----------------
+Mean TTFT (ms):                          13399.44  
+Median TTFT (ms):                        16131.92  
+P90 TTFT (ms):                           21013.29  
+P95 TTFT (ms):                           22105.23  
+P99 TTFT (ms):                           23067.84  
+-----Time per Output Token (excl. 1st token)------
+Mean TPOT (ms):                          87.16     
+Median TPOT (ms):                        87.70     
+P90 TPOT (ms):                           93.75     
+P95 TPOT (ms):                           95.12     
+P99 TPOT (ms):                           102.83    
+---------------Inter-Token Latency----------------
+Mean ITL (ms):                           88.77     
+Median ITL (ms):                         31.51     
+P90 ITL (ms):                            311.59    
+P95 ITL (ms):                            453.39    
+P99 ITL (ms):                            551.18    
+Max ITL (ms):                            3584.86   
+==================================================
+[Thu Jul 16 09:11:48 AM UTC 2026] Rate 5 done.
+[Thu Jul 16 09:11:48 AM UTC 2026] All rates complete.

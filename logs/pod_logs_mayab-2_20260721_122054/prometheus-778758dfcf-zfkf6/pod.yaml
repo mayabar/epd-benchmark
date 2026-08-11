@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2026-07-13T08:23:21Z"
+  generateName: prometheus-778758dfcf-
+  generation: 1
+  labels:
+    app: prometheus
+    pod-template-hash: 778758dfcf
+    topology.kubernetes.io/region: US-EAST-01
+    topology.kubernetes.io/zone: "185"
+  name: prometheus-778758dfcf-zfkf6
+  namespace: mayab-2
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: ReplicaSet
+    name: prometheus-778758dfcf
+    uid: cc52117e-c98b-41fc-9928-4667eb96a3ab
+  resourceVersion: "26901763"
+  uid: 6fbb92c5-aecf-4b96-b6bd-d6d44dfe94b5
+spec:
+  containers:
+  - args:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    image: prom/prometheus:latest
+    imagePullPolicy: Always
+    name: prometheus
+    ports:
+    - containerPort: 9090
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/prometheus
+      name: config-volume
+    - mountPath: /prometheus
+      name: data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-7z7hc
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: g801c7a
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: prometheus-sa
+  serviceAccountName: prometheus-sa
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - configMap:
+      defaultMode: 420
+      name: prometheus-config
+    name: config-volume
+  - emptyDir: {}
+    name: data
+  - name: kube-api-access-7z7hc
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T08:23:22Z"
+    observedGeneration: 1
+    status: "True"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T08:23:21Z"
+    observedGeneration: 1
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T08:23:23Z"
+    observedGeneration: 1
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T08:23:23Z"
+    observedGeneration: 1
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-13T08:23:21Z"
+    observedGeneration: 1
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: containerd://9921998eb17ac4c5689ca5833cc95fee21639a2780175cd7f4e5916a4a8bddc5
+    image: docker.io/prom/prometheus:latest
+    imageID: docker.io/prom/prometheus@sha256:3c42b892cf723fa54d2f262c37a0e1f80aa8c8ddb1da7b9b0df9455a35a7f893
+    lastState: {}
+    name: prometheus
+    ready: true
+    resources: {}
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2026-07-13T08:23:23Z"
+    user:
+      linux:
+        gid: 65534
+        supplementalGroups:
+        - 65534
+        uid: 65534
+    volumeMounts:
+    - mountPath: /etc/prometheus
+      name: config-volume
+    - mountPath: /prometheus
+      name: data
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-7z7hc
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 10.202.212.51
+  hostIPs:
+  - ip: 10.202.212.51
+  observedGeneration: 1
+  phase: Running
+  podIP: 10.0.12.66
+  podIPs:
+  - ip: 10.0.12.66
+  qosClass: BestEffort
+  resources: {}
+  startTime: "2026-07-13T08:23:21Z"

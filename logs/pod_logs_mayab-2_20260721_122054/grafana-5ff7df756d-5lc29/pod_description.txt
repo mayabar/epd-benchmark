@@ -1,0 +1,49 @@
+Name:             grafana-5ff7df756d-5lc29
+Namespace:        mayab-2
+Priority:         0
+Service Account:  default
+Node:             g801c7a/10.202.212.51
+Start Time:       Mon, 13 Jul 2026 11:23:22 +0300
+Labels:           app=grafana
+                  pod-template-hash=5ff7df756d
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=185
+Annotations:      <none>
+Status:           Running
+IP:               10.0.12.108
+IPs:
+  IP:           10.0.12.108
+Controlled By:  ReplicaSet/grafana-5ff7df756d
+Containers:
+  grafana:
+    Container ID:   containerd://9de5875566356956dc6db88d3b18d6c7fd826f43e82767174ea29138abc27c71
+    Image:          grafana/grafana:latest
+    Image ID:       docker.io/grafana/grafana@sha256:121a7a9ece6dc10b969f1f96eed64b4f07dfac0d0b8abc070f7cb83bbde86f63
+    Port:           3000/TCP
+    Host Port:      0/TCP
+    State:          Running
+      Started:      Mon, 13 Jul 2026 11:23:23 +0300
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-xtnnn (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  kube-api-access-xtnnn:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>

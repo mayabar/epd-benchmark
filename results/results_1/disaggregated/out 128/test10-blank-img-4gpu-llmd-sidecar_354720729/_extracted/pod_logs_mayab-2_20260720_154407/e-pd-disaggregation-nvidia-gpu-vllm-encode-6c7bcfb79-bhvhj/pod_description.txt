@@ -1,0 +1,111 @@
+Name:             e-pd-disaggregation-nvidia-gpu-vllm-encode-6c7bcfb79-bhvhj
+Namespace:        mayab-2
+Priority:         0
+Service Account:  e-pd-disaggregation-nvidia-gpu-vllm-sa
+Node:             g1251ac/10.202.207.1
+Start Time:       Mon, 20 Jul 2026 15:31:03 +0300
+Labels:           llm-d.ai/accelerator-variant=gpu
+                  llm-d.ai/accelerator-vendor=nvidia
+                  llm-d.ai/engine-type=vllm
+                  llm-d.ai/guide=e-disaggregation
+                  llm-d.ai/model=Qwen3-VL-235B-A22B-Instruct-FP8
+                  llm-d.ai/role=encode
+                  pod-template-hash=6c7bcfb79
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=82
+Annotations:      <none>
+Status:           Running
+IP:               10.0.10.167
+IPs:
+  IP:           10.0.10.167
+Controlled By:  ReplicaSet/e-pd-disaggregation-nvidia-gpu-vllm-encode-6c7bcfb79
+Containers:
+  modelserver:
+    Container ID:  containerd://03d0480a4edadab13452a7d5d7ea0b413ea8b93ac02529c1948329a6e56b169a
+    Image:         ghcr.io/revit13/vllm-openai:61e53561a
+    Image ID:      ghcr.io/revit13/vllm-openai@sha256:a43abd72a569f25ef3d2bb9ae3bcfb3dce5470c5feb62c76e98a6e6d8d2fe084
+    Ports:         8000/TCP (modelserver), 5610/TCP (ec-nixl)
+    Host Ports:    0/TCP (modelserver), 0/TCP (ec-nixl)
+    Command:
+      vllm
+      serve
+    Args:
+      Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+      --disable-access-log-for-endpoints=/health,/metrics,/v1/models
+      --tensor-parallel-size=1
+      --trust-remote-code
+      --mm-encoder-only
+      --enforce-eager
+      --no-enable-prefix-caching
+      --mm-processor-cache-gb=0
+      --max-model-len=20480
+      --ec-transfer-config
+      {"ec_connector": "ECCPUConnector", "ec_role": "ec_producer", "ec_connector_extra_config": {"num_ec_blocks": 500000}}
+    State:          Running
+      Started:      Mon, 20 Jul 2026 15:31:13 +0300
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:             16
+      memory:          512Gi
+      nvidia.com/gpu:  1
+    Requests:
+      cpu:             16
+      memory:          256Gi
+      nvidia.com/gpu:  1
+    Liveness:          http-get http://:modelserver/health delay=0s timeout=5s period=10s #success=1 #failure=3
+    Readiness:         http-get http://:modelserver/v1/models delay=0s timeout=2s period=5s #success=1 #failure=3
+    Startup:           http-get http://:modelserver/v1/models delay=15s timeout=5s period=30s #success=1 #failure=120
+    Environment:
+      VLLM_EC_SIDE_CHANNEL_HOST:   (v1:status.podIP)
+      VLLM_EC_SIDE_CHANNEL_PORT:  5610
+      HF_HOME:                    /model-cache
+      USER:                       llm-d
+      VLLM_LOGGING_LEVEL:         DEBUG
+    Mounts:
+      /.cache from torch-compile-cache (rw)
+      /.config from config-cache (rw)
+      /.triton from triton-cache (rw)
+      /dev/shm from shm (rw)
+      /model-cache from model-cache (rw)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  shm:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     Memory
+    SizeLimit:  90Gi
+  torch-compile-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  triton-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  config-cache:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  model-cache:
+    Type:        PersistentVolumeClaim (a reference to a PersistentVolumeClaim in the same namespace)
+    ClaimName:   e-pd-disaggregation-nvidia-gpu-vllm-model-cache
+    ReadOnly:    false
+QoS Class:       Burstable
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason                  Age   From                     Message
+  ----     ------                  ----  ----                     -------
+  Normal   Scheduled               13m   default-scheduler        Successfully assigned mayab-2/e-pd-disaggregation-nvidia-gpu-vllm-encode-6c7bcfb79-bhvhj to g1251ac
+  Normal   SuccessfulAttachVolume  13m   attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-3bdd92a5-b336-4c21-a4ad-47396639cd25"
+  Normal   Pulled                  13m   kubelet                  spec.containers{modelserver}: Container image "ghcr.io/revit13/vllm-openai:61e53561a" already present on machine and can be accessed by the pod
+  Normal   Created                 13m   kubelet                  spec.containers{modelserver}: Container created
+  Normal   Started                 13m   kubelet                  spec.containers{modelserver}: Container started
+  Warning  Unhealthy               12m   kubelet                  spec.containers{modelserver}: Startup probe failed: Get "http://10.0.10.167:8000/v1/models": dial tcp 10.0.10.167:8000: connect: connection refused

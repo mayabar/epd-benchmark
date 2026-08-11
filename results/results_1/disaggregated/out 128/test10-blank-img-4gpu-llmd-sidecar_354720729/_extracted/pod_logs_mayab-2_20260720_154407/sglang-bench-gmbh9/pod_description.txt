@@ -1,0 +1,75 @@
+Name:             sglang-bench-gmbh9
+Namespace:        mayab-2
+Priority:         0
+Service Account:  default
+Node:             g49fc0a/10.202.221.55
+Start Time:       Mon, 20 Jul 2026 15:33:19 +0300
+Labels:           batch.kubernetes.io/controller-uid=fc52dcba-a5a0-464a-b4d9-40d6e27cc7db
+                  batch.kubernetes.io/job-name=sglang-bench
+                  controller-uid=fc52dcba-a5a0-464a-b4d9-40d6e27cc7db
+                  job-name=sglang-bench
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=214
+Annotations:      <none>
+Status:           Succeeded
+IP:               10.0.12.221
+IPs:
+  IP:           10.0.12.221
+Controlled By:  Job/sglang-bench
+Containers:
+  bench:
+    Container ID:  containerd://5fac4bf7fd1837205a45e46d65d8edfc6791fbb1663a0d364890728d21c1e806
+    Image:         docker.io/lmsysorg/sglang:v0.5.14
+    Image ID:      docker.io/lmsysorg/sglang@sha256:5027e95bf6ec536856b1b52a91d1f35ff5c564ab83e8a94758a169ff09bb8df3
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      /scripts/run_bench.sh
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 20 Jul 2026 15:33:20 +0300
+      Finished:     Mon, 20 Jul 2026 15:39:14 +0300
+    Ready:          False
+    Restart Count:  0
+    Limits:
+      cpu:     8
+      memory:  16Gi
+    Requests:
+      cpu:     4
+      memory:  8Gi
+    Environment:
+      GATEWAY_IP:  e-disaggregation-epp
+    Mounts:
+      /scripts from script (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-6sfg6 (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  script:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      sglang-bench-script
+    Optional:  false
+  kube-api-access-6sfg6:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  11m   default-scheduler  Successfully assigned mayab-2/sglang-bench-gmbh9 to g49fc0a
+  Normal  Pulled     11m   kubelet            spec.containers{bench}: Container image "docker.io/lmsysorg/sglang:v0.5.14" already present on machine and can be accessed by the pod
+  Normal  Created    11m   kubelet            spec.containers{bench}: Container created
+  Normal  Started    11m   kubelet            spec.containers{bench}: Container started

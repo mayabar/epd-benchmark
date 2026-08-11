@@ -1,0 +1,14 @@
+{
+  "model": "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8",
+  "messages": [
+    {
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": "Say hi"
+        }
+      ]
+    }
+  ]
+}

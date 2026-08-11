@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sglang-bench-script
+data:
+  run_bench.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    MODEL="Qwen/Qwen3-VL-235B-A22B-Instruct-FP8"
+    HOST="${GATEWAY_IP}"
+    PORT="80"
+    RATES=(1)
+    NUM_PROMPTS=3
+    IMAGE_COUNT=1
+    IMAGE_RESOLUTION=1080p
+    RANDOM_INPUT_LEN=128
+    RANDOM_OUTPUT_LEN=128
+
+    echo "[$(date)] Waiting for http://${HOST}:${PORT}/v1/models ..."
+    for i in $(seq 1 40); do
+      if curl -sf "http://${HOST}:${PORT}/v1/models" -o /dev/null; then
+        echo "  Endpoint up."; break
+      fi
+      echo "  Attempt ${i}/40 failed, retrying in 15s..."
+      sleep 15
+      [[ ${i} -eq 40 ]] && { echo "ERROR: endpoint timeout" >&2; exit 1; }
+    done
+
+    for rate in "${RATES[@]}"; do
+      echo ""
+      echo "[$(date)] === Rate ${rate} ==="
+      python -m sglang.bench_serving \
+        --model "${MODEL}" \
+        --num-prompts ${NUM_PROMPTS} \
+        --dataset-name image \
+        --random-input-len ${RANDOM_INPUT_LEN} \
+        --random-output-len ${RANDOM_OUTPUT_LEN} \
+        --random-range-ratio 1.0 \
+        --image-count ${IMAGE_COUNT} \
+        --image-resolution ${IMAGE_RESOLUTION} \
+        --image-content blank \
+        --host "${HOST}" \
+        --port "${PORT}" \
+        --backend sglang-oai-chat \
+        --request-rate "${rate}" \
+        --extra-request-body '{"ignore_eos": true}'
+      echo "[$(date)] Rate ${rate} done."
+    done
+    echo "[$(date)] All rates complete."
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sglang-bench
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: Never
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node.kubernetes.io/instance-type
+                operator: In
+                values:
+                - turin-gp
+      containers:
+        - name: bench
+          image: docker.io/lmsysorg/sglang:v0.5.14
+          command: ["/bin/bash", "/scripts/run_bench.sh"]
+          env:
+            - name: GATEWAY_IP
+              value: "e-disaggregation-epp"
+          resources:
+            requests:
+              cpu: "4"
+              memory: "8Gi"
+            limits:
+              cpu: "8"
+              memory: "16Gi"
+          volumeMounts:
+            - name: script
+              mountPath: /scripts
+      volumes:
+        - name: script
+          configMap:
+            name: sglang-bench-script
+            defaultMode: 0755

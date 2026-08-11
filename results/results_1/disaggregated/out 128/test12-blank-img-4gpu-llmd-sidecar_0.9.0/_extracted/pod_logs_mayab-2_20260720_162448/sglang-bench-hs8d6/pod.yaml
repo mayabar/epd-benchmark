@@ -1,0 +1,187 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: "2026-07-20T13:17:55Z"
+  generateName: sglang-bench-
+  generation: 1
+  labels:
+    batch.kubernetes.io/controller-uid: 5b71a300-d25f-48c1-9c15-19a2c85e7d49
+    batch.kubernetes.io/job-name: sglang-bench
+    controller-uid: 5b71a300-d25f-48c1-9c15-19a2c85e7d49
+    job-name: sglang-bench
+    topology.kubernetes.io/region: US-EAST-01
+    topology.kubernetes.io/zone: "214"
+  name: sglang-bench-hs8d6
+  namespace: mayab-2
+  ownerReferences:
+  - apiVersion: batch/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Job
+    name: sglang-bench
+    uid: 5b71a300-d25f-48c1-9c15-19a2c85e7d49
+  resourceVersion: "34205513"
+  uid: 67ef502c-be7e-46ec-9aaa-94b9e71603fa
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node.kubernetes.io/instance-type
+            operator: In
+            values:
+            - turin-gp
+  containers:
+  - command:
+    - /bin/bash
+    - /scripts/run_bench.sh
+    env:
+    - name: GATEWAY_IP
+      value: e-disaggregation-epp
+    image: docker.io/lmsysorg/sglang:v0.5.14
+    imagePullPolicy: IfNotPresent
+    name: bench
+    resources:
+      limits:
+        cpu: "8"
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /scripts
+      name: script
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-q9gzw
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  nodeName: g49fc0a
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Never
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  terminationGracePeriodSeconds: 30
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - configMap:
+      defaultMode: 493
+      name: sglang-bench-script
+    name: script
+  - name: kube-api-access-q9gzw
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  allocatedResources:
+    cpu: "4"
+    memory: 8Gi
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-20T13:23:37Z"
+    observedGeneration: 1
+    status: "False"
+    type: PodReadyToStartContainers
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-20T13:17:55Z"
+    observedGeneration: 1
+    reason: PodCompleted
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-20T13:23:36Z"
+    observedGeneration: 1
+    reason: PodCompleted
+    status: "False"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-20T13:23:36Z"
+    observedGeneration: 1
+    reason: PodCompleted
+    status: "False"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2026-07-20T13:17:55Z"
+    observedGeneration: 1
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - allocatedResources:
+      cpu: "4"
+      memory: 8Gi
+    containerID: containerd://d9d54bbcad26d45e392166f5064fa2e714bf0e50ce7b9a7de9be22f099a5844f
+    image: docker.io/lmsysorg/sglang:v0.5.14
+    imageID: docker.io/lmsysorg/sglang@sha256:5027e95bf6ec536856b1b52a91d1f35ff5c564ab83e8a94758a169ff09bb8df3
+    lastState: {}
+    name: bench
+    ready: false
+    resources:
+      limits:
+        cpu: "8"
+        memory: 16Gi
+      requests:
+        cpu: "4"
+        memory: 8Gi
+    restartCount: 0
+    started: false
+    state:
+      terminated:
+        containerID: containerd://d9d54bbcad26d45e392166f5064fa2e714bf0e50ce7b9a7de9be22f099a5844f
+        exitCode: 0
+        finishedAt: "2026-07-20T13:23:35Z"
+        reason: Completed
+        startedAt: "2026-07-20T13:17:56Z"
+    user:
+      linux:
+        gid: 0
+        supplementalGroups:
+        - 0
+        uid: 0
+    volumeMounts:
+    - mountPath: /scripts
+      name: script
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-q9gzw
+      readOnly: true
+      recursiveReadOnly: Disabled
+  hostIP: 10.202.221.55
+  hostIPs:
+  - ip: 10.202.221.55
+  observedGeneration: 1
+  phase: Succeeded
+  podIP: 10.0.12.153
+  podIPs:
+  - ip: 10.0.12.153
+  qosClass: Burstable
+  resources:
+    requests:
+      memory: 8Gi
+  startTime: "2026-07-20T13:17:55Z"

@@ -1,0 +1,69 @@
+Name:             sglang-bench-bdzw5
+Namespace:        mayab-2
+Priority:         0
+Service Account:  default
+Node:             g49fc0a/10.202.221.55
+Start Time:       Mon, 20 Jul 2026 16:28:57 +0300
+Labels:           batch.kubernetes.io/controller-uid=99ab0d37-eef1-42b0-a6f4-d654afbd8d3b
+                  batch.kubernetes.io/job-name=sglang-bench
+                  controller-uid=99ab0d37-eef1-42b0-a6f4-d654afbd8d3b
+                  job-name=sglang-bench
+                  topology.kubernetes.io/region=US-EAST-01
+                  topology.kubernetes.io/zone=214
+Annotations:      <none>
+Status:           Succeeded
+IP:               10.0.12.204
+IPs:
+  IP:           10.0.12.204
+Controlled By:  Job/sglang-bench
+Containers:
+  bench:
+    Container ID:  containerd://052b0bd65f461868a6411a0b28e96915a707b3934407fe40f6ba6d176edb5b62
+    Image:         docker.io/lmsysorg/sglang:v0.5.14
+    Image ID:      docker.io/lmsysorg/sglang@sha256:5027e95bf6ec536856b1b52a91d1f35ff5c564ab83e8a94758a169ff09bb8df3
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /bin/bash
+      /scripts/run_bench.sh
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Mon, 20 Jul 2026 16:28:57 +0300
+      Finished:     Mon, 20 Jul 2026 16:35:25 +0300
+    Ready:          False
+    Restart Count:  0
+    Limits:
+      cpu:     8
+      memory:  16Gi
+    Requests:
+      cpu:     4
+      memory:  8Gi
+    Environment:
+      GATEWAY_IP:  e-disaggregation-epp
+    Mounts:
+      /scripts from script (rw)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-v5gph (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  script:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      sglang-bench-script
+    Optional:  false
+  kube-api-access-v5gph:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>
