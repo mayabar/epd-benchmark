@@ -1,0 +1,171 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    llm-d.ai/accelerator-variant: gpu
+    llm-d.ai/accelerator-vendor: nvidia
+    llm-d.ai/engine-type: vllm
+    llm-d.ai/guide: e-disaggregation
+    llm-d.ai/model: Qwen3-VL-235B-A22B-Instruct-FP8
+    llm-d.ai/role: decode
+  name: e-pd-disaggregation-nvidia-gpu-vllm-decode
+  namespace: mayab-diaggr
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 0
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      llm-d.ai/accelerator-variant: gpu
+      llm-d.ai/accelerator-vendor: nvidia
+      llm-d.ai/engine-type: vllm
+      llm-d.ai/guide: e-disaggregation
+      llm-d.ai/model: Qwen3-VL-235B-A22B-Instruct-FP8
+      llm-d.ai/role: decode
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        llm-d.ai/accelerator-variant: gpu
+        llm-d.ai/accelerator-vendor: nvidia
+        llm-d.ai/engine-type: vllm
+        llm-d.ai/guide: e-disaggregation
+        llm-d.ai/model: Qwen3-VL-235B-A22B-Instruct-FP8
+        llm-d.ai/role: decode
+    spec:
+      containers:
+      - args:
+        - Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+        - --disable-access-log-for-endpoints=/health,/metrics,/v1/models
+        - --tensor-parallel-size=4
+        - --mm-processor-cache-gb
+        - '20'
+        - --port=8200
+        - --ec-transfer-config
+        - '{"ec_connector": "ECCPUConnector", "ec_role": "ec_consumer", "ec_connector_extra_config":
+          {"ec_cpu_bytes": 5368709120, "ec_enable_nixl": true}}'
+        command:
+        - vllm
+        - serve
+        env:
+        - name: HF_HOME
+          value: /model-cache
+        - name: HF_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: HF_TOKEN
+              name: llm-d-hf-token
+        - name: VLLM_LOGGING_LEVEL
+          value: INFO
+        - name: USER
+          value: llm-d
+        image: docker.io/vllm/vllm-openai@sha256:ed3c505d2cf4b62b0ca8d0b87591bcb6fbff2a3abcc6d25732343e19b4d74f09
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: modelserver
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: modelserver
+        ports:
+        - containerPort: 5600
+          name: nixl
+          protocol: TCP
+        - containerPort: 8200
+          name: modelserver
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /v1/models
+            port: modelserver
+            scheme: HTTP
+          periodSeconds: 5
+          successThreshold: 1
+          timeoutSeconds: 2
+        resources:
+          limits:
+            cpu: '32'
+            memory: 512Gi
+            nvidia.com/gpu: '4'
+            rdma/ib: '1'
+          requests:
+            cpu: '16'
+            memory: 256Gi
+            nvidia.com/gpu: '4'
+            rdma/ib: '1'
+        startupProbe:
+          failureThreshold: 120
+          httpGet:
+            path: /v1/models
+            port: modelserver
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 5
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /dev/shm
+          name: shm
+        - mountPath: /.cache
+          name: torch-compile-cache
+        - mountPath: /.triton
+          name: triton-cache
+        - mountPath: /.config
+          name: config-cache
+        - name: model-cache
+          mountPath: /model-cache
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - --port=8000
+        - --kv-connector=nixlv2
+        - --ec-connector=ec-nixl
+        - --zap-log-level=debug
+        - --secure-proxy=false
+        image: ghcr.io/llm-d/llm-d-router-disagg-sidecar:main
+        imagePullPolicy: Always
+        name: routing-proxy
+        ports:
+        - containerPort: 8000
+          name: sidecar
+          protocol: TCP
+        resources: {}
+        restartPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: e-pd-disaggregation-nvidia-gpu-vllm-sa
+      serviceAccountName: e-pd-disaggregation-nvidia-gpu-vllm-sa
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 24Gi
+        name: shm
+      - emptyDir: {}
+        name: torch-compile-cache
+      - emptyDir: {}
+        name: triton-cache
+      - emptyDir: {}
+        name: config-cache
+      - name: model-cache
+        persistentVolumeClaim:
+          claimName: e-pd-disaggregation-nvidia-gpu-vllm-model-cache
+      nodeSelector:
+        kubernetes.io/hostname: gf2a19e

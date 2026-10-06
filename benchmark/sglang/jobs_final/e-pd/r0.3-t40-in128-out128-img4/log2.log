@@ -1,0 +1,13 @@
+[Sun Oct  4 06:55:11 PM UTC 2026] Waiting for http://e-disaggregation-epp:80/v1/models ...
+  Endpoint up.
+
+[Sun Oct  4 06:55:11 PM UTC 2026] === Rate 0.3 ===
+/usr/local/lib/python3.12/dist-packages/torchao/quantization/quant_api.py:1731: SyntaxWarning: invalid escape sequence '\.'
+  """Configuration class for applying different quantization configs to modules or parameters based on their fully qualified names (FQNs).
+/sgl-workspace/sglang/python/sglang/srt/layers/attention/fla/utils.py:223: UserWarning: Triton is not supported on current platform, roll back to CPU.
+  warnings.warn(
+[transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+/sgl-workspace/sglang/python/sglang/benchmark/datasets/image.py:51: UserWarning: High resolution (1920x1080) with 160 total images may take a long time. Consider reducing resolution or image count.
+  return sample_image_requests(
+read tcp 192.168.1.183:50555->104.18.38.179:443: read: connection reset by peer
+error: read tcp 192.168.1.183:50555->104.18.38.179:443: read: connection reset by peer

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mm-baseline-nvidia-gpu-vllm-model-cache
+  namespace: mayab-aggr
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: shared-vast
+  resources:
+    requests:
+      storage: 300Gi

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: e-pd-disaggregation-nvidia-gpu-vllm-model-cache
+  namespace: mayab-diaggr
+spec:
+  accessModes: ["ReadWriteMany"]
+  storageClassName: shared-vast
+  resources:
+    requests:
+      storage: 300Gi

@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -c \"import PIL\")",
+      "Bash(python3 -m pip install --quiet --user --break-system-packages pillow)",
+      "Bash(kubectl get *)",
+      "Bash(/tmp/xlvenv/bin/python -)"
+    ]
+  }
+}
