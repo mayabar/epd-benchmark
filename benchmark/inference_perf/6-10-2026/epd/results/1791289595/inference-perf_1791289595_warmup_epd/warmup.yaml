@@ -1,0 +1,46 @@
+load:
+  type: concurrent
+  stages:
+    - num_requests: 4
+      concurrency_level: 1
+  num_workers: 1
+  worker_max_concurrency: 1
+  request_timeout: 600
+api:
+  type: chat # required for images
+  streaming: true
+# model/url written out (not *model / *url): run_only.sh explodes each workload on its
+# own, and yq doesn't resolve an alias nested inside an alias reused by a later workload.
+server:
+  type: vllm
+  model_name: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  base_url: http://aggregation-epp:80
+  ignore_eos: true # exactly output_len tokens
+tokenizer:
+  pretrained_model_name_or_path: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+data:
+  # shared_prefix with 1 prompt per group and system_prompt_len 0 = nothing shared.
+  # (type synthetic would also send images, but in 0.5.0 it ignores the output length
+  # and always sends max_tokens=30.)
+  type: shared_prefix
+  multimodal:
+    image: # fresh random images per request (made unique by the hook)
+      count: {type: fixed, min: 4, max: 4, mean: 4}
+      insertion_point: 0.0 # images first, then the text
+      resolutions:
+        - resolution: "1080p"
+          weight: 1
+  shared_prefix:
+    num_groups: 4
+    num_prompts_per_group: 1
+    system_prompt_len: 0 # no system prompt
+    question_len: 128 # 128 random text tokens (excluding chat template and image tokens)
+    output_len: 128
+    enable_multi_turn_chat: false
+report:
+  request_lifecycle:
+    summary: true
+    per_request: true
+storage:
+  local_storage:
+    path: /requests/inference-perf_1791289595_warmup_epd

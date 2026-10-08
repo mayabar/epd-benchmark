@@ -1,0 +1,45 @@
+load:
+  type: constant # evenly spaced, 1/rate seconds apart; "poisson" = random gaps like sglang
+  stages:
+    - rate: 2 # requests per second
+      duration: 10 # seconds -> rate x duration = 20 requests
+  num_workers: 1
+  worker_max_concurrency: 1 # max in flight; must be >= rate x latency, or requests queue in the CLIENT
+  request_timeout: 600 # seconds; image encode + 235B prefill is slow
+api:
+  type: chat # REQUIRED for multimodal - the completion API cannot carry images
+  streaming: true
+server:
+  type: vllm
+  model_name: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  base_url: http://aggregation-epp:80
+  ignore_eos: true # so the server emits the full output_len
+tokenizer:
+  pretrained_model_name_or_path: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+data:
+  # shared_prefix (not synthetic): with images, synthetic ignores output_distribution
+  # and caps max_tokens at 30; shared_prefix sends max_tokens = output_len.
+  type: shared_prefix
+  multimodal: # data.multimodal = payload media, freshly random per request
+    image: # (shared_prefix.multimodal would be prefix media, reused per group)
+      count: {type: fixed, min: 4, max: 4, mean: 4} # 4 images per request, each one random
+      insertion_point: 0.0 # 0.0 = images at the start of the question part
+      resolutions:
+        - resolution: "1080p"
+          weight: 1
+  shared_prefix:
+    num_groups: 50 # distinct prompts; keep >= rate x duration, or prompt text repeats
+    # (1 prompt per group -> nothing shared between requests)
+    num_prompts_per_group: 1
+    system_prompt_len: 0 # random tokens; 64 + 64 = 128 input text tokens exactly
+    question_len: 128 # (excluding chat template and image tokens)
+    output_len: 128 # exact with ignore_eos
+    enable_multi_turn_chat: false
+    # seed left unset -> different random text every run
+report:
+  request_lifecycle:
+    summary: true
+    per_request: true # one row per request
+storage:
+  local_storage:
+    path: /requests/inference-perf_1791283962_multimodal_img_mm-img-aggr

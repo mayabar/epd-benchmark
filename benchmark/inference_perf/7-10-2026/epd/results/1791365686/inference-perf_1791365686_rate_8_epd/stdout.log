@@ -1,0 +1,795 @@
+2026-10-07 10:01:49,632 - inference_perf.config.config - INFO - Using configuration from: /requests/inference-perf_1791365686_rate_8_epd/rate_8.yaml
+2026-10-07 10:01:49,636 - inference_perf.config.config - INFO - Benchmarking with the following config:
+
+api:
+  type: chat
+  streaming: true
+  headers: null
+  slo_unit: null
+  slo_tpot_header: null
+  slo_ttft_header: null
+  response_format: null
+  session_id_header_key: null
+data:
+  type: shared_prefix
+  path: null
+  corpus_file_path: null
+  input_distribution: null
+  output_distribution: null
+  shared_prefix:
+    num_prompts_per_group: 1
+    system_prompt_len: 0
+    question_len: 128
+    output_len: 128
+    enable_multi_turn_chat: false
+    num_groups: 960
+  multimodal:
+    image:
+      count:
+        type: fixed
+        min: 8
+        max: 8
+        mean: 8
+      insertion_point: 0.0
+      resolutions:
+      - resolution: 1080p
+        weight: 1
+  trace: null
+  otel_trace_replay: null
+  weka_trace_replay: null
+  conversation_replay: null
+  visionarena: null
+load:
+  type: constant
+  interval: 1.0
+  stages:
+  - !!python/object:inference_perf.config.loadgen.config.StandardLoadStage
+    __dict__:
+      rate: 8.0
+      duration: 120
+      num_requests: null
+      concurrency_level: null
+    __pydantic_extra__: null
+    __pydantic_fields_set__: !!set
+      rate: null
+      duration: null
+    __pydantic_private__: null
+  sweep: null
+  num_workers: 4
+  worker_max_concurrency: 256
+  worker_max_tcp_connections: 2500
+  trace: null
+  circuit_breakers: []
+  request_timeout: 1800
+  lora_traffic_split: null
+  base_seed: 1791367306799
+metrics: null
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+    per_adapter: true
+    per_adapter_stage: false
+    percentiles:
+    - 0.1
+    - 1.0
+    - 5.0
+    - 10.0
+    - 25.0
+    - 50.0
+    - 75.0
+    - 90.0
+    - 95.0
+    - 99.0
+    - 99.9
+  prometheus:
+    summary: true
+    per_stage: false
+  session_lifecycle:
+    summary: true
+    per_stage: true
+    per_session: false
+  goodput: null
+storage:
+  local_storage:
+    path: /requests/inference-perf_1791365686_rate_8_epd
+    report_file_prefix: null
+  google_cloud_storage: null
+  simple_storage_service: null
+server:
+  type: vllm
+  model_name: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  base_url: http://aggregation-epp:80
+  ignore_eos: true
+tokenizer:
+  pretrained_model_name_or_path: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+circuit_breakers: null
+
+
+2026-10-07 10:01:49,636 - inference_perf.client.filestorage.local - INFO - Report files will be stored at: /requests/inference-perf_1791365686_rate_8_epd
+2026-10-07 10:01:49,689 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:01:49,694 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/config.json "HTTP/1.1 200 OK"
+2026-10-07 10:01:49,744 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:01:49,749 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-10-07 10:01:49,778 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-10-07 10:01:49,804 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-10-07 10:01:49,998 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8 "HTTP/1.1 200 OK"
+2026-10-07 10:01:50,025 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:01:50,030 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/config.json "HTTP/1.1 200 OK"
+2026-10-07 10:01:50,062 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:01:50,067 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-10-07 10:01:50,093 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-10-07 10:01:50,119 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-10-07 10:01:50,305 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8 "HTTP/1.1 200 OK"
+2026-10-07 10:01:51,247 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run started
+2026-10-07 10:01:52,610 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 1 requests (images=8, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:01:53,038 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 1 requests (images=8, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:01:53,197 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 1 requests (images=8, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:01:54,116 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 1 requests (images=8, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:02,915 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 24 requests (images=192, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:03,548 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 22 requests (images=176, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:03,834 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 26 requests (images=208, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:04,390 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 14 requests (images=112, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:12,978 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 51 requests (images=408, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:13,734 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 44 requests (images=352, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:14,021 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 54 requests (images=432, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:14,525 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 34 requests (images=272, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:23,084 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 72 requests (images=576, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:24,046 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 62 requests (images=496, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:24,613 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 75 requests (images=600, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:25,671 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 50 requests (images=400, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:33,341 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 90 requests (images=720, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:34,567 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 83 requests (images=664, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:34,952 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 97 requests (images=776, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:36,476 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 68 requests (images=544, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:43,817 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 114 requests (images=912, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:45,075 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 111 requests (images=888, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:45,487 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 124 requests (images=992, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:46,672 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 87 requests (images=696, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:02:54,171 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 134 requests (images=1072, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:02:55,702 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 138 requests (images=1104, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:02:55,740 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 151 requests (images=1208, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:02:57,059 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 110 requests (images=880, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:03:04,437 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 153 requests (images=1224, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:03:05,827 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 165 requests (images=1320, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:03:05,906 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 178 requests (images=1424, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:03:07,280 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 131 requests (images=1048, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:03:14,557 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 173 requests (images=1384, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:03:15,858 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 186 requests (images=1488, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:03:15,971 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 199 requests (images=1592, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:03:17,793 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 143 requests (images=1144, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:03:25,032 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 191 requests (images=1528, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:03:25,859 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 209 requests (images=1672, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:03:26,152 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 222 requests (images=1776, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:03:28,188 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 160 requests (images=1280, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:03:35,207 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 208 requests (images=1664, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:03:36,223 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 229 requests (images=1832, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:03:36,760 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 242 requests (images=1936, videos=0, video_frames=0, audios=0) (worker pid=2761)
+2026-10-07 10:03:38,573 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 174 requests (images=1392, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:03:45,365 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 226 requests (images=1808, videos=0, video_frames=0, audios=0) (worker pid=2755)
+2026-10-07 10:03:46,461 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 248 requests (images=1984, videos=0, video_frames=0, audios=0) (worker pid=2758)
+2026-10-07 10:03:48,928 - inference_perf.apis.chat - INFO - Multimodal datagen progress: materialized 192 requests (images=1536, videos=0, video_frames=0, audios=0) (worker pid=2764)
+2026-10-07 10:16:55,094 - inference_perf.loadgen.load_generator - INFO - Stage 0 - run completed
+Overall Progress ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% 1/1 0:00:00 0:15:04
+2026-10-07 10:16:56,568 - inference_perf.reportgen.base - INFO - Generating Reports...
+2026-10-07 10:16:56,625 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:16:56,637 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/config.json "HTTP/1.1 200 OK"
+2026-10-07 10:16:56,668 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+2026-10-07 10:16:56,679 - httpx - INFO - HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/7fbcd8c9e2ad011808ed8a57d64c462605c3e381/tokenizer_config.json "HTTP/1.1 200 OK"
+2026-10-07 10:16:56,707 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+2026-10-07 10:16:56,741 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-10-07 10:16:57,167 - httpx - INFO - HTTP Request: GET https://huggingface.co/api/models/Qwen/Qwen3-VL-235B-A22B-Instruct-FP8 "HTTP/1.1 200 OK"
+2026-10-07 10:17:00,583 - inference_perf.reportgen.base - WARNING - Prometheus Metrics Client is not configured or not of type PrometheusMetricsClient
+2026-10-07 10:17:00,612 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1791365686_rate_8_epd/summary_lifecycle_metrics.json
+2026-10-07 10:17:00,612 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1791365686_rate_8_epd/stage_0_lifecycle_metrics.json
+2026-10-07 10:17:03,423 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1791365686_rate_8_epd/per_request_lifecycle_metrics.json
+2026-10-07 10:17:03,425 - inference_perf.client.filestorage.local - INFO - Report saved to: /requests/inference-perf_1791365686_rate_8_epd/config.yaml
+=== START_SUMMARY ===
+{
+  "benchmark_time_seconds": 902.2403167681769,
+  "load_summary": {
+    "count": 960,
+    "schedule_delay": {
+      "mean": 0.04749757551859754,
+      "min": 0.04563587065786123,
+      "max": 0.07394942175596952,
+      "p0.1": 0.045696594241075215,
+      "p1": 0.046002875585108995,
+      "p5": 0.04632749957963824,
+      "p10": 0.046541666705161334,
+      "p25": 0.04685566667467356,
+      "median": 0.04726026067510247,
+      "p75": 0.047738558147102594,
+      "p90": 0.04823411870747805,
+      "p95": 0.048643390228971836,
+      "p99": 0.054989640805870287,
+      "p99.9": 0.06448205522447878
+    }
+  },
+  "successes": {
+    "count": 960,
+    "latency": {
+      "request_latency": {
+        "mean": 449.00160217106946,
+        "min": 59.78973199799657,
+        "max": 788.4645928926766,
+        "p0.1": 60.688689403300174,
+        "p1": 67.57329978988506,
+        "p5": 97.72836241475306,
+        "p10": 137.76651369770988,
+        "p25": 255.61158860940486,
+        "median": 452.41400328138843,
+        "p75": 647.3122928491794,
+        "p90": 761.3954902422614,
+        "p95": 784.5490606948733,
+        "p99": 787.5518260599207,
+        "p99.9": 788.1616711243614
+      },
+      "normalized_time_per_output_token": {
+        "mean": 3.6343360037495853,
+        "min": 0.4671072812343482,
+        "max": 8.040389014407992,
+        "p0.1": 0.4741303859632826,
+        "p1": 0.5528830171009765,
+        "p5": 0.7927081762162907,
+        "p10": 1.0943606235305197,
+        "p25": 2.027354649032123,
+        "median": 3.589195028355256,
+        "p75": 5.290035768187116,
+        "p90": 6.120799273166378,
+        "p95": 6.190785660839632,
+        "p99": 7.18442855005388,
+        "p99.9": 7.7966308292823845
+      },
+      "time_per_output_token": {
+        "mean": 0.46309792375938946,
+        "min": 0.02366798796405004,
+        "max": 0.7096206023153372,
+        "p0.1": 0.03380849132138326,
+        "p1": 0.09514201915265597,
+        "p5": 0.3631001354708505,
+        "p10": 0.4611520406144752,
+        "p25": 0.46165231185209915,
+        "median": 0.4621162780883216,
+        "p75": 0.4635815940866995,
+        "p90": 0.5335346524894169,
+        "p95": 0.5587681176943616,
+        "p99": 0.6112656388025304,
+        "p99.9": 0.6486183740974127
+      },
+      "time_to_first_token": {
+        "mean": 392.1377684350494,
+        "min": 1.9749358259141445,
+        "max": 779.548026541248,
+        "p0.1": 2.9055498760472984,
+        "p1": 9.539962203577161,
+        "p5": 38.98034886829555,
+        "p10": 78.89558475986124,
+        "p25": 196.90506848017685,
+        "median": 393.7392345480621,
+        "p75": 588.6683026545215,
+        "p90": 702.774225905072,
+        "p95": 741.1991280687041,
+        "p99": 772.0209454255272,
+        "p99.9": 778.2797985079299
+      },
+      "inter_token_latency": {
+        "mean": 0.4562674971480592,
+        "min": 0.0,
+        "max": 2.3254696121439338,
+        "p0.1": 0.0,
+        "p1": 0.019684381829574705,
+        "p5": 0.4113428319338709,
+        "p10": 0.4167311370372772,
+        "p25": 0.43000963516533375,
+        "median": 0.4630710403434932,
+        "p75": 0.49125791527330875,
+        "p90": 0.5065166745334864,
+        "p95": 0.510859294468537,
+        "p99": 0.9283408626914026,
+        "p99.9": 1.433645647379571
+      }
+    },
+    "throughput": {
+      "input_tokens_per_sec": 136.19431288567986,
+      "output_tokens_per_sec": 132.20978688613545,
+      "total_tokens_per_sec": 268.4040997718153,
+      "requests_per_sec": 1.064018069419374,
+      "images_per_sec": 8.512144555354991,
+      "videos_per_sec": 0.0,
+      "audios_per_sec": 0.0
+    },
+    "request_size_bytes": {
+      "mean": 415062.48541666666,
+      "min": 408310.0,
+      "max": 415752.0,
+      "p0.1": 411167.82,
+      "p1": 411620.54,
+      "p5": 411876.95,
+      "p10": 415009.5,
+      "p25": 415217.75,
+      "median": 415323.5,
+      "p75": 415400.25,
+      "p90": 415464.0,
+      "p95": 415500.0,
+      "p99": 415572.05,
+      "p99.9": 415694.46
+    },
+    "prompt_len": {
+      "mean": 128.0,
+      "min": 128.0,
+      "max": 128.0,
+      "p0.1": 128.0,
+      "p1": 128.0,
+      "p5": 128.0,
+      "p10": 128.0,
+      "p25": 128.0,
+      "median": 128.0,
+      "p75": 128.0,
+      "p90": 128.0,
+      "p95": 128.0,
+      "p99": 128.0,
+      "p99.9": 128.0
+    },
+    "image": {
+      "count": {
+        "mean": 8.0,
+        "min": 8.0,
+        "max": 8.0,
+        "p0.1": 8.0,
+        "p1": 8.0,
+        "p5": 8.0,
+        "p10": 8.0,
+        "p25": 8.0,
+        "median": 8.0,
+        "p75": 8.0,
+        "p90": 8.0,
+        "p95": 8.0,
+        "p99": 8.0,
+        "p99.9": 8.0
+      },
+      "pixels": {
+        "mean": 2073600.0,
+        "min": 2073600.0,
+        "max": 2073600.0,
+        "p0.1": 2073600.0,
+        "p1": 2073600.0,
+        "p5": 2073600.0,
+        "p10": 2073600.0,
+        "p25": 2073600.0,
+        "median": 2073600.0,
+        "p75": 2073600.0,
+        "p90": 2073600.0,
+        "p95": 2073600.0,
+        "p99": 2073600.0,
+        "p99.9": 2073600.0
+      },
+      "bytes": {
+        "mean": 38730.094401041664,
+        "min": 35809.0,
+        "max": 38770.0,
+        "p0.1": 36093.0,
+        "p1": 38570.0,
+        "p5": 38752.0,
+        "p10": 38754.0,
+        "p25": 38756.0,
+        "median": 38758.0,
+        "p75": 38761.0,
+        "p90": 38763.0,
+        "p95": 38764.0,
+        "p99": 38766.0,
+        "p99.9": 38768.0
+      },
+      "aspect_ratio": {
+        "mean": 1.7777777777777783,
+        "min": 1.7777777777777777,
+        "max": 1.7777777777777777,
+        "p0.1": 1.7777777777777777,
+        "p1": 1.7777777777777777,
+        "p5": 1.7777777777777777,
+        "p10": 1.7777777777777777,
+        "p25": 1.7777777777777777,
+        "median": 1.7777777777777777,
+        "p75": 1.7777777777777777,
+        "p90": 1.7777777777777777,
+        "p95": 1.7777777777777777,
+        "p99": 1.7777777777777777,
+        "p99.9": 1.7777777777777777
+      }
+    },
+    "video": {
+      "count": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p0.1": 0.0,
+        "p1": 0.0,
+        "p5": 0.0,
+        "p10": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p99.9": 0.0
+      },
+      "frames": null,
+      "pixels": null,
+      "bytes": null,
+      "aspect_ratio": null
+    },
+    "audio": {
+      "count": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p0.1": 0.0,
+        "p1": 0.0,
+        "p5": 0.0,
+        "p10": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p99.9": 0.0
+      },
+      "seconds": null,
+      "bytes": null
+    },
+    "prompt_tokens": {
+      "total": 15813120.0,
+      "cached": 0.0,
+      "uncached": 15813120.0
+    },
+    "output_len": {
+      "mean": 124.25520833333333,
+      "min": 83.0,
+      "max": 129.0,
+      "p0.1": 90.672,
+      "p1": 96.59,
+      "p5": 105.0,
+      "p10": 110.0,
+      "p25": 127.0,
+      "median": 128.0,
+      "p75": 128.0,
+      "p90": 128.0,
+      "p95": 128.0,
+      "p99": 128.0,
+      "p99.9": 128.04100000000005
+    },
+    "output_tokens": {
+      "total": 122880.0
+    },
+    "token_count_mismatches": 248
+  },
+  "failures": {
+    "count": 0,
+    "request_latency": null,
+    "prompt_len": null
+  }
+}
+=== END_SUMMARY ===
+=== START_STAGE_0 ===
+{
+  "benchmark_time_seconds": 902.2403167681769,
+  "load_summary": {
+    "count": 960,
+    "schedule_delay": {
+      "mean": 0.04749757551859754,
+      "min": 0.04563587065786123,
+      "max": 0.07394942175596952,
+      "p0.1": 0.045696594241075215,
+      "p1": 0.046002875585108995,
+      "p5": 0.04632749957963824,
+      "p10": 0.046541666705161334,
+      "p25": 0.04685566667467356,
+      "median": 0.04726026067510247,
+      "p75": 0.047738558147102594,
+      "p90": 0.04823411870747805,
+      "p95": 0.048643390228971836,
+      "p99": 0.054989640805870287,
+      "p99.9": 0.06448205522447878
+    },
+    "send_duration": 119.6858096383512,
+    "requested_rate": 8.0,
+    "achieved_rate": 8.021001010067822
+  },
+  "successes": {
+    "count": 960,
+    "latency": {
+      "request_latency": {
+        "mean": 449.00160217106946,
+        "min": 59.78973199799657,
+        "max": 788.4645928926766,
+        "p0.1": 60.688689403300174,
+        "p1": 67.57329978988506,
+        "p5": 97.72836241475306,
+        "p10": 137.76651369770988,
+        "p25": 255.61158860940486,
+        "median": 452.41400328138843,
+        "p75": 647.3122928491794,
+        "p90": 761.3954902422614,
+        "p95": 784.5490606948733,
+        "p99": 787.5518260599207,
+        "p99.9": 788.1616711243614
+      },
+      "normalized_time_per_output_token": {
+        "mean": 3.6343360037495853,
+        "min": 0.4671072812343482,
+        "max": 8.040389014407992,
+        "p0.1": 0.4741303859632826,
+        "p1": 0.5528830171009765,
+        "p5": 0.7927081762162907,
+        "p10": 1.0943606235305197,
+        "p25": 2.027354649032123,
+        "median": 3.589195028355256,
+        "p75": 5.290035768187116,
+        "p90": 6.120799273166378,
+        "p95": 6.190785660839632,
+        "p99": 7.18442855005388,
+        "p99.9": 7.7966308292823845
+      },
+      "time_per_output_token": {
+        "mean": 0.46309792375938946,
+        "min": 0.02366798796405004,
+        "max": 0.7096206023153372,
+        "p0.1": 0.03380849132138326,
+        "p1": 0.09514201915265597,
+        "p5": 0.3631001354708505,
+        "p10": 0.4611520406144752,
+        "p25": 0.46165231185209915,
+        "median": 0.4621162780883216,
+        "p75": 0.4635815940866995,
+        "p90": 0.5335346524894169,
+        "p95": 0.5587681176943616,
+        "p99": 0.6112656388025304,
+        "p99.9": 0.6486183740974127
+      },
+      "time_to_first_token": {
+        "mean": 392.1377684350494,
+        "min": 1.9749358259141445,
+        "max": 779.548026541248,
+        "p0.1": 2.9055498760472984,
+        "p1": 9.539962203577161,
+        "p5": 38.98034886829555,
+        "p10": 78.89558475986124,
+        "p25": 196.90506848017685,
+        "median": 393.7392345480621,
+        "p75": 588.6683026545215,
+        "p90": 702.774225905072,
+        "p95": 741.1991280687041,
+        "p99": 772.0209454255272,
+        "p99.9": 778.2797985079299
+      },
+      "inter_token_latency": {
+        "mean": 0.4562674971480592,
+        "min": 0.0,
+        "max": 2.3254696121439338,
+        "p0.1": 0.0,
+        "p1": 0.019684381829574705,
+        "p5": 0.4113428319338709,
+        "p10": 0.4167311370372772,
+        "p25": 0.43000963516533375,
+        "median": 0.4630710403434932,
+        "p75": 0.49125791527330875,
+        "p90": 0.5065166745334864,
+        "p95": 0.510859294468537,
+        "p99": 0.9283408626914026,
+        "p99.9": 1.433645647379571
+      }
+    },
+    "throughput": {
+      "input_tokens_per_sec": 136.19431288567986,
+      "output_tokens_per_sec": 132.20978688613545,
+      "total_tokens_per_sec": 268.4040997718153,
+      "requests_per_sec": 1.064018069419374,
+      "images_per_sec": 8.512144555354991,
+      "videos_per_sec": 0.0,
+      "audios_per_sec": 0.0
+    },
+    "request_size_bytes": {
+      "mean": 415062.48541666666,
+      "min": 408310.0,
+      "max": 415752.0,
+      "p0.1": 411167.82,
+      "p1": 411620.54,
+      "p5": 411876.95,
+      "p10": 415009.5,
+      "p25": 415217.75,
+      "median": 415323.5,
+      "p75": 415400.25,
+      "p90": 415464.0,
+      "p95": 415500.0,
+      "p99": 415572.05,
+      "p99.9": 415694.46
+    },
+    "prompt_len": {
+      "mean": 128.0,
+      "min": 128.0,
+      "max": 128.0,
+      "p0.1": 128.0,
+      "p1": 128.0,
+      "p5": 128.0,
+      "p10": 128.0,
+      "p25": 128.0,
+      "median": 128.0,
+      "p75": 128.0,
+      "p90": 128.0,
+      "p95": 128.0,
+      "p99": 128.0,
+      "p99.9": 128.0
+    },
+    "image": {
+      "count": {
+        "mean": 8.0,
+        "min": 8.0,
+        "max": 8.0,
+        "p0.1": 8.0,
+        "p1": 8.0,
+        "p5": 8.0,
+        "p10": 8.0,
+        "p25": 8.0,
+        "median": 8.0,
+        "p75": 8.0,
+        "p90": 8.0,
+        "p95": 8.0,
+        "p99": 8.0,
+        "p99.9": 8.0
+      },
+      "pixels": {
+        "mean": 2073600.0,
+        "min": 2073600.0,
+        "max": 2073600.0,
+        "p0.1": 2073600.0,
+        "p1": 2073600.0,
+        "p5": 2073600.0,
+        "p10": 2073600.0,
+        "p25": 2073600.0,
+        "median": 2073600.0,
+        "p75": 2073600.0,
+        "p90": 2073600.0,
+        "p95": 2073600.0,
+        "p99": 2073600.0,
+        "p99.9": 2073600.0
+      },
+      "bytes": {
+        "mean": 38730.094401041664,
+        "min": 35809.0,
+        "max": 38770.0,
+        "p0.1": 36093.0,
+        "p1": 38570.0,
+        "p5": 38752.0,
+        "p10": 38754.0,
+        "p25": 38756.0,
+        "median": 38758.0,
+        "p75": 38761.0,
+        "p90": 38763.0,
+        "p95": 38764.0,
+        "p99": 38766.0,
+        "p99.9": 38768.0
+      },
+      "aspect_ratio": {
+        "mean": 1.7777777777777783,
+        "min": 1.7777777777777777,
+        "max": 1.7777777777777777,
+        "p0.1": 1.7777777777777777,
+        "p1": 1.7777777777777777,
+        "p5": 1.7777777777777777,
+        "p10": 1.7777777777777777,
+        "p25": 1.7777777777777777,
+        "median": 1.7777777777777777,
+        "p75": 1.7777777777777777,
+        "p90": 1.7777777777777777,
+        "p95": 1.7777777777777777,
+        "p99": 1.7777777777777777,
+        "p99.9": 1.7777777777777777
+      }
+    },
+    "video": {
+      "count": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p0.1": 0.0,
+        "p1": 0.0,
+        "p5": 0.0,
+        "p10": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p99.9": 0.0
+      },
+      "frames": null,
+      "pixels": null,
+      "bytes": null,
+      "aspect_ratio": null
+    },
+    "audio": {
+      "count": {
+        "mean": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p0.1": 0.0,
+        "p1": 0.0,
+        "p5": 0.0,
+        "p10": 0.0,
+        "p25": 0.0,
+        "median": 0.0,
+        "p75": 0.0,
+        "p90": 0.0,
+        "p95": 0.0,
+        "p99": 0.0,
+        "p99.9": 0.0
+      },
+      "seconds": null,
+      "bytes": null
+    },
+    "prompt_tokens": {
+      "total": 15813120.0,
+      "cached": 0.0,
+      "uncached": 15813120.0
+    },
+    "output_len": {
+      "mean": 124.25520833333333,
+      "min": 83.0,
+      "max": 129.0,
+      "p0.1": 90.672,
+      "p1": 96.59,
+      "p5": 105.0,
+      "p10": 110.0,
+      "p25": 127.0,
+      "median": 128.0,
+      "p75": 128.0,
+      "p90": 128.0,
+      "p95": 128.0,
+      "p99": 128.0,
+      "p99.9": 128.04100000000005
+    },
+    "output_tokens": {
+      "total": 122880.0
+    },
+    "token_count_mismatches": 248
+  },
+  "failures": {
+    "count": 0,
+    "request_latency": null,
+    "prompt_len": null
+  }
+}
+=== END_STAGE_0 ===
+                         Throughput and Goodput Summary                         
+┏━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━┓
+┃       ┃          ┃ Achiev… ┃    Error ┃       ┃      In ┃      Out ┃     Tot ┃
+┃ Stage ┃ Req Rate ┃    Rate ┃     Rate ┃ Req/s ┃ Tokens… ┃ Tokens/s ┃ Tokens… ┃
+┡━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━┩
+│     0 │      8.0 │     8.0 │     0.0% │   1.1 │   136.2 │    132.2 │   268.4 │
+└───────┴──────────┴─────────┴──────────┴───────┴─────────┴──────────┴─────────┘
+                          Request & Token Latency (ms)                          
+┏━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━━┳━━━━━━┓
+┃       ┃   Req ┃   Req ┃   Req ┃       ┃       ┃       ┃       ┃       ┃      ┃
+┃       ┃   Lat ┃   Lat ┃   Lat ┃  TTFT ┃  TTFT ┃  TTFT ┃   ITL ┃   ITL ┃  ITL ┃
+┃ Stage ┃  Mean ┃   Med ┃   P90 ┃  Mean ┃   Med ┃   P90 ┃  Mean ┃   Med ┃  P90 ┃
+┡━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━━╇━━━━━━┩
+│     0 │ 4490… │ 4524… │ 7613… │ 3921… │ 3937… │ 7027… │ 456.3 │ 463.1 │ 506… │
+└───────┴───────┴───────┴───────┴───────┴───────┴───────┴───────┴───────┴──────┘
+                          Token Generation Speed (ms)                           
+┏━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃       ┃           ┃          ┃          ┃ Norm TPOT ┃ Norm TPOT ┃  Norm TPOT ┃
+┃ Stage ┃ TPOT Mean ┃ TPOT Med ┃ TPOT P90 ┃      Mean ┃       Med ┃        P90 ┃
+┡━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━┩
+│     0 │     463.1 │    462.1 │    533.5 │    3634.3 │    3589.2 │     6120.8 │
+└───────┴───────────┴──────────┴──────────┴───────────┴───────────┴────────────┘
+                            Token Length Aggregates                             
+┏━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━┓
+┃       ┃    Prompt ┃    Prompt ┃    Prompt ┃    Output ┃   Output ┃    Output ┃
+┃ Stage ┃      Mean ┃       Med ┃       P90 ┃      Mean ┃      Med ┃       P90 ┃
+┡━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━┩
+│     0 │     128.0 │     128.0 │     128.0 │     124.3 │    128.0 │     128.0 │
+└───────┴───────────┴───────────┴───────────┴───────────┴──────────┴───────────┘

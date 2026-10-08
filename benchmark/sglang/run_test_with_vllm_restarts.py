@@ -30,13 +30,14 @@ run_tests.py itself is unmodified; its helpers are imported and reused directly.
 "e-pd" cases restart e-pd-disaggregation-nvidia-gpu-vllm-decode AND
 ...-encode in mayab-diaggr (together, not serially).
 
-Both deployments' pods are pinned (via nodeSelector) to two hardcoded nodes so a
+Both deployments' pods are pinned (via nodeSelector) to hardcoded nodes so a
 restart always lands in the same place:
-  NODE1 -- the aggregated "epd" pod (4 GPU) OR the disaggregated "pd" (decode) pod
-           (4 GPU). Only one of the two is ever scaled up at a time (see the
-           mutual-exclusion step below), so NODE1 only needs 4 free GPUs, not 8.
-  NODE2 -- the disaggregated "e" (encode) pod (1 GPU)
-This script does not pick nodes; it only checks the two hardcoded nodes currently
+  NODE1 -- the aggregated "epd" pod OR the disaggregated "pd" (decode) pod
+           (NODE1_GPUS each). Only one of the two is ever scaled up at a time (see
+           the mutual-exclusion step below), so NODE1 only needs NODE1_GPUS free.
+  NODE2 -- the disaggregated "e" (encode) pod (NODE2_GPUS); must be a different
+           node than NODE1, so encoder output crosses the network to the pd pod.
+This script does not pick nodes; it only checks the hardcoded nodes currently
 have enough free GPUs for what's pinned there, and refuses to start otherwise.
 
 Before scaling up either type, this script explicitly scales the OTHER type's
@@ -63,22 +64,26 @@ from pathlib import Path
 
 import run_tests as rt
 
-# original nodes 
+# original nodes
 # NODE1 = "gf2a19e"  # epd pod (4 GPU) OR pd/decode pod (4 GPU) -- never both at once
-# node with free GPUs
-NODE1 = "g11d5e0"
-NODE2 = "g13bc90"  # e/encode pod (1 GPU)
+# NODE2 = "g13bc90"  # e/encode pod -- taken over by another namespace (8/8 GPUs used)
+# node with free GPUs; the deployments' nodeSelectors must match these
+# g11d5e0 filled up (8/8 GPUs used) -- moved pd/decode to g1251ac
+NODE1 = "g1251ac"  # epd pod (1 GPU) OR pd/decode pod (1 GPU) -- never both at once
+NODE2 = "gc37d06"  # e/encode pod (1 GPU) -- must differ from NODE1
+NODE1_GPUS = 1
+NODE2_GPUS = 1
 
-MODEL = "Qwen/Qwen3-VL-235B-A22B-Instruct-FP8"
+MODEL = "Qwen/Qwen3-VL-32B-Instruct"  # must match the model the stacks serve, or warmup gets 404
 
 RESTART_CONFIG = {
-    "epd": {
-        "namespace": "mayab-aggr",
-        # decode-equivalent (and only) deployment; also the port-forward/metrics target
-        "deployments": ["mm-baseline-nvidia-gpu-vllm-decode"],
-        "remote_port": 8000,
-        "gateway_service": "aggregation-epp",
-    },
+    # "epd": {
+    #     "namespace": "mayab-aggr",
+    #     # decode-equivalent (and only) deployment; also the port-forward/metrics target
+    #     "deployments": ["mm-baseline-nvidia-gpu-vllm-decode"],
+    #     "remote_port": 8000,
+    #     "gateway_service": "aggregation-epp",
+    # },
     "e-pd": {
         "namespace": "mayab-diaggr",
         # decode first: it's the port-forward/metrics target
@@ -176,13 +181,13 @@ def validate_tree(root: Path) -> None:
 # Warmup: a handful of multimodal chat-completions requests through the same
 # gateway the real benchmark uses, fired before every iteration and discarded.
 #
-# Real 1920x1080 photos (benchmark/sglang/warmup-images/*.jpg) are used instead of
+# Real 1920x1080 photos (benchmark/warmup-images/*.jpg) are used instead of
 # a synthetic pixel so the vision encoder sees realistic-sized input. Even-indexed
 # requests embed a local file as a base64 data: URL; odd-indexed requests pass the
 # original remote http(s) URL directly, so both code paths get exercised.
 # --------------------------------------------------------------------------
 
-WARMUP_IMAGES_DIR = Path(__file__).resolve().parent / "warmup-images"
+WARMUP_IMAGES_DIR = Path(__file__).resolve().parent.parent.parent / "warmup-images"
 
 # (local filename, the public URL it was downloaded from) -- both 1920x1080.
 WARMUP_IMAGE_SOURCES = [
@@ -412,8 +417,10 @@ def main() -> int:
     for cfg in RESTART_CONFIG.values():
         rt.preflight_cluster(cfg["namespace"])
         check_secret(cfg["namespace"])
-    check_node_gpu_capacity(NODE1, 4)
-    check_node_gpu_capacity(NODE2, 1)
+    if NODE1 == NODE2:
+        sys.exit(f"ERROR: NODE1 and NODE2 are both {NODE1}; the e (encode) pod must run on a different node")
+    check_node_gpu_capacity(NODE1, NODE1_GPUS)
+    check_node_gpu_capacity(NODE2, NODE2_GPUS)
 
     began = time.monotonic()
     try:

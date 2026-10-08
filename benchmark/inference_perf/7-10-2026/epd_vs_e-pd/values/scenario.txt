@@ -1,0 +1,106 @@
+Scenario: epd vs e-pd, multimodal requests with 4 and 8 images
+=================================================================
+
+Results
+-------
+The results are in the images in this folder, for request rates 0.5, 1, 2 and 4 req/s:
+
+  e2e_comparison.png    mean E2E request latency vs request rate
+  ttft_comparison.png   mean time to first token (TTFT) vs request rate
+  tpot_comparison.png   mean time per output token (TPOT) vs request rate
+
+Each image has four series:
+
+  epd  4 images   light blue,   circles
+  e-pd 4 images   light orange, circles
+  epd  8 images   dark blue,    squares
+  e-pd 8 images   dark orange,  squares
+
+
+The two llm-d deployments
+-------------------------
+Both serve the same model with the same vLLM build, behind an llm-d gateway (Envoy +
+llm-d endpoint picker, EPP). Requests are sent to the gateway, not to vLLM directly.
+
+  Model:     Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  vLLM:      0.30.1rc1.dev48+g7f1a5398e (docker.io/vllm/vllm-openai@sha256:ed3c505d...)
+  EPP:       ghcr.io/llm-d/llm-d-router-endpoint-picker:v0.10.0
+  GPUs:      NVIDIA H200 (gd-8xh200ib-i128 nodes)
+
+1. epd - aggregated (namespace mayab-aggr, gateway aggregation-epp)
+   One vLLM pod does all three phases for every request: encode the images (vision
+   encoder), prefill, and decode.
+   - 1 pod, 4 GPUs, --tensor-parallel-size=4, --mm-processor-cache-gb 20
+   - Follows the llm-d "multimodal aggregation" well-lit path.
+
+2. e-pd - encode-disaggregated (namespace mayab-diaggr, gateway e-disaggregation-epp)
+   Image encoding runs on a separate vLLM pod. The encoder output (embeddings) is sent
+   to the prefill/decode pod, which does prefill + decode only.
+   - encode pod:         1 pod, 1 GPU, --tensor-parallel-size=1, --mm-encoder-only,
+                         --enforce-eager, --no-enable-prefix-caching, --mm-processor-cache-gb 20,
+                         EC connector role ec_producer (ECCPUConnector, NIXL, 10 GiB CPU buffer)
+   - prefill/decode pod: 1 pod, 4 GPUs, --tensor-parallel-size=4, --mm-processor-cache-gb 20,
+                         EC connector role ec_consumer (ECCPUConnector, NIXL, 5 GiB CPU buffer),
+                         plus the llm-d routing sidecar (llm-d-router-disagg-sidecar)
+   - The encode and prefill/decode pods run on different nodes (gf2a956 / g11d5e0), so
+     encoder output crosses the network between nodes.
+   - Follows the llm-d "E-disaggregation" well-lit path.
+
+   e-pd uses 5 GPUs in total, epd uses 4.
+
+Only one of the two deployments was running during each benchmark (the aggregated pod and
+the e-pd prefill/decode pod use the same 4-GPU node).
+
+
+Workload (identical for all four series except the number of images)
+---------------------------------------------------------------------
+Tool: inference-perf 0.5.0 (inside ghcr.io/llm-d/llm-d-benchmark:v0.7.0), run as a
+harness pod inside the cluster (llm-d-benchmark "run against an existing stack").
+
+Each request is one chat completion (/v1/chat/completions, streaming) with:
+  - Images:  4 or 8 images per request, each 1920x1080 (1080p) PNG, placed before the text.
+  - Input:   128 text tokens of random tokens, no system prompt.
+             The 128 is text only. vLLM's actual prompt is larger: it also includes the
+             image tokens and the chat-template tokens.
+  - Output:  exactly 128 tokens (max_tokens=128 with ignore_eos=true).
+
+Everything is unique - no prefix or encoder cache reuse between requests:
+  - Every request has its own random 128-token text.
+  - Every image is unique. inference-perf 0.5.0 draws each synthetic image as one random
+    solid color (only 16.7M possible, so repeats are likely over thousands of images); the
+    harness was patched before each run to make each image's first pixel row random.
+
+Load pattern:
+  - Constant arrival rate (requests exactly 1/rate seconds apart), 120 seconds per rate:
+      0.5 req/s ->  60 requests
+      1   req/s -> 120 requests
+      2   req/s -> 240 requests
+      4   req/s -> 480 requests
+  - Each rate is a separate inference-perf run. A run ends only when all of its requests
+    have completed.
+  - Before each rate, the harness waited until every vLLM pod reported 0 running and
+    0 waiting requests for 10 seconds in a row, then waited another 30 seconds.
+  - A 4-request warmup ran before the first rate (not part of the results).
+  - The client never limited the rate: up to 1,024 requests could be in flight.
+
+
+Runs
+----
+  series          date        experiment id   results
+  epd  4 images   2026-10-06  1791289595      6-10-2026/epd/results/1791289595
+  e-pd 4 images   2026-10-06  1791292590      6-10-2026/e-pd/results/1791292590
+  e-pd 8 images   2026-10-07  1791361006      7-10-2026/e-pd/results/1791361006
+  epd  8 images   2026-10-07  1791365686      7-10-2026/epd/results/1791365686
+
+Each run's results folder has one sub-folder per rate with summary_lifecycle_metrics.json
+(aggregates), per_request_lifecycle_metrics.json (every request) and the exact workload
+config (rate_<r>.yaml).
+
+
+Metrics
+-------
+  E2E    time from sending the request to receiving the last token
+  TTFT   time from sending the request to receiving the first token
+  TPOT   (E2E - TTFT) / (output tokens - 1): average time between output tokens
+
+Images generated with: uv run 7-10-2026/plot_4_vs_8_images.py (from benchmark/inference_perf)

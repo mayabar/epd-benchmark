@@ -1,0 +1,41 @@
+load:
+  type: constant # evenly spaced arrivals, 1/rate seconds apart
+  num_workers: 4
+  worker_max_concurrency: 256 # 4 x 256 = 1024 in flight: never limits the rate client-side
+  request_timeout: 1800
+  stages:
+    - rate: 4
+      duration: 120 # 480 requests
+api:
+  type: chat # required for images
+  streaming: true
+server:
+  type: vllm
+  model_name: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  base_url: http://e-disaggregation-epp:80
+  ignore_eos: true # exactly output_len tokens
+tokenizer:
+  pretrained_model_name_or_path: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+data:
+  type: shared_prefix
+  multimodal:
+    image: # fresh random images per request (made unique by the hook)
+      count: {type: fixed, min: 4, max: 4, mean: 4}
+      insertion_point: 0.0 # images first, then the text
+      resolutions:
+        - resolution: "1080p"
+          weight: 1
+  shared_prefix:
+    num_prompts_per_group: 1
+    system_prompt_len: 0
+    question_len: 128
+    output_len: 128
+    enable_multi_turn_chat: false
+    num_groups: 480
+report:
+  request_lifecycle:
+    summary: true
+    per_request: true
+storage:
+  local_storage:
+    path: /requests/inference-perf_1791292590_rate_4_e-pd

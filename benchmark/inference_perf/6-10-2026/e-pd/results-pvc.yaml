@@ -1,0 +1,14 @@
+# Results PVC for the inference-perf harness in mayab-diaggr (same spec as the one in mayab-aggr).
+# kubectl apply -f results-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mayab-workload-pvc
+  namespace: mayab-diaggr
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: shared-vast

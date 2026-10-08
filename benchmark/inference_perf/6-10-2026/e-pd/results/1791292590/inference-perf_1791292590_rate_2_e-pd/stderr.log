@@ -1,0 +1,10 @@
+Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method.Environment variable empty: LLMDBENCH_BASE64_CONTEXT_CONTENTS
+Failed to get Kubernetes context from environment variable: LLMDBENCH_BASE64_CONTEXT_CONTENTS
+Failed to retrieve ConfigMap 'llm-d-benchmark-standup-parameters': (403)
+Reason: Forbidden
+HTTP response headers: HTTPHeaderDict({'Audit-Id': '0762516c-9200-47d0-959f-b072800a0c54', 'Cache-Control': 'no-cache, private', 'Content-Type': 'application/json', 'X-Content-Type-Options': 'nosniff', 'X-Kubernetes-Pf-Flowschema-Uid': '50bfaae4-9707-46f6-9b0f-2a0c0f73201c', 'X-Kubernetes-Pf-Prioritylevel-Uid': '564d692a-b28e-4ae1-918f-55e9705cb98b', 'Date': 'Tue, 06 Oct 2026 13:30:51 GMT', 'Content-Length': '405'})
+HTTP response body: {"kind":"Status","apiVersion":"v1","metadata":{},"status":"Failure","message":"configmaps \"llm-d-benchmark-standup-parameters\" is forbidden: User \"system:serviceaccount:mayab-diaggr:llmdbench-harness-sa\" cannot get resource \"configmaps\" in API group \"\" in the namespace \"mayab-diaggr\"","reason":"Forbidden","details":{"name":"llm-d-benchmark-standup-parameters","kind":"configmaps"},"code":403}
+
+
+Failed to retrieve /standup/ev.yaml: [Errno 2] No such file or directory: '/standup/ev.yaml'
+Warning: LLMDBENCH_DEPLOY_METHODS undefined, cannot determine deployment method

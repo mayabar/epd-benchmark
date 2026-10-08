@@ -27,13 +27,13 @@ env:
 workload:                         # yaml configuration for harness workload(s)
   multimodal_img:
     load:
-      type: constant
+      type: constant              # evenly spaced, 1/rate seconds apart; "poisson" = random gaps like sglang
       stages:
-        - rate: 0.25
-          duration: 10
+        - rate: 2                 # requests per second
+          duration: 10            # seconds -> rate x duration = 20 requests
       num_workers: 1
-      worker_max_concurrency: 1  # must exceed rate x latency, or requests queue in the CLIENT
-      request_timeout: 0        # image encode + 235B prefill is slow; default would time out
+      worker_max_concurrency: 1  # max in flight; must be >= rate x latency, or requests queue in the CLIENT
+      request_timeout: 600        # seconds; image encode + 235B prefill is slow
     api:
       type: chat                  # REQUIRED for multimodal - the completion API cannot carry images
       streaming: true
@@ -45,23 +45,26 @@ workload:                         # yaml configuration for harness workload(s)
     tokenizer:
       pretrained_model_name_or_path: *model
     data:
-      type: shared_prefix         # the only data type that supports the multimodal block
+      # shared_prefix (not synthetic): with images, synthetic ignores output_distribution
+      # and caps max_tokens at 30; shared_prefix sends max_tokens = output_len.
+      type: shared_prefix
+      multimodal:                 # data.multimodal = payload media, freshly random per request
+        image:                    # (shared_prefix.multimodal would be prefix media, reused per group)
+          count: { type: fixed, min: 4, max: 4, mean: 4 }   # 4 images per request, each one random
+          insertion_point: 0.0                              # 0.0 = images at the start of the question part
+          resolutions:
+            - resolution: "1080p"
+              weight: 1
       shared_prefix:
-        multimodal:
-          image:
-            count: { type: fixed, min: 1, max: 1, mean: 1 }   # images per request
-            insertion_point: 0.0                              # 0.0 = images before the text
-            resolutions:
-              - resolution: "1080p"
-                weight: 1
-        num_groups: 200           # 200 x 5 = 1000 distinct prompts >= ~960 requests in the ladder
-        num_prompts_per_group: 5
-        system_prompt_len: 100
-        question_len: 1200
-        output_len: 300
+        num_groups: 50            # distinct prompts; keep >= rate x duration, or prompt text repeats
+                                  # (1 prompt per group -> nothing shared between requests)
+        num_prompts_per_group: 1
+        system_prompt_len: 0      # random tokens; 64 + 64 = 128 input text tokens exactly
+        question_len: 128         # (excluding chat template and image tokens)
+        output_len: 128           # exact with ignore_eos
         enable_multi_turn_chat: false
+                                  # seed left unset -> different random text every run
     report:
       request_lifecycle:
         summary: true
-        per_stage: true           # per-stage is what makes the rate ladder readable
-        per_request: true         # raw rows for offline analysis; ~1000 rows here
+        per_request: true         # one row per request

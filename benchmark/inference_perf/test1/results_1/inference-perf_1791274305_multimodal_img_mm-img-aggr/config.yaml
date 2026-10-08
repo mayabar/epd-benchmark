@@ -1,0 +1,113 @@
+api:
+  type: chat
+  streaming: true
+  headers: null
+  slo_unit: null
+  slo_tpot_header: null
+  slo_ttft_header: null
+  response_format: null
+  session_id_header_key: null
+data:
+  type: shared_prefix
+  path: null
+  corpus_file_path: null
+  input_distribution: null
+  output_distribution: null
+  shared_prefix:
+    num_unique_system_prompts: 2
+    num_users_per_system_prompt: 1
+    system_prompt_len: 64
+    question_len: 64
+    output_len: 128
+    seed: null
+    question_distribution: null
+    output_distribution: null
+    enable_multi_turn_chat: false
+    multimodal: null
+  multimodal:
+    image:
+      count:
+        min: 1
+        max: 1
+        mean: 1.0
+        std_dev: 200.0
+        total_count: null
+        type: fixed
+        variance: null
+        skew: 0.0
+      insertion_point: 0.0
+      resolutions:
+      - resolution: 1080p
+        weight: 1.0
+      representation: png
+    video: null
+    audio: null
+  trace: null
+  otel_trace_replay: null
+  weka_trace_replay: null
+  conversation_replay: null
+  visionarena: null
+load:
+  type: concurrent
+  interval: 1.0
+  stages:
+  - num_requests: 2
+    concurrency_level: 1
+    rate: 2.0
+    duration: 1
+  sweep: null
+  num_workers: 1
+  worker_max_concurrency: 0
+  worker_max_tcp_connections: 2500
+  trace: null
+  circuit_breakers: []
+  request_timeout: 600.0
+  lora_traffic_split: null
+  base_seed: 1791274329851
+metrics: null
+report:
+  request_lifecycle:
+    summary: true
+    per_stage: true
+    per_request: true
+    per_adapter: true
+    per_adapter_stage: false
+    percentiles:
+    - 0.1
+    - 1.0
+    - 5.0
+    - 10.0
+    - 25.0
+    - 50.0
+    - 75.0
+    - 90.0
+    - 95.0
+    - 99.0
+    - 99.9
+  prometheus:
+    summary: true
+    per_stage: false
+  session_lifecycle:
+    summary: true
+    per_stage: true
+    per_session: false
+  goodput: null
+storage:
+  local_storage:
+    path: /requests/inference-perf_1791274305_multimodal_img_mm-img-aggr
+    report_file_prefix: null
+  google_cloud_storage: null
+  simple_storage_service: null
+server:
+  type: vllm
+  model_name: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  base_url: http://aggregation-epp:80
+  ignore_eos: true
+  api_key: null
+  cert_path: null
+  key_path: null
+tokenizer:
+  pretrained_model_name_or_path: Qwen/Qwen3-VL-235B-A22B-Instruct-FP8
+  trust_remote_code: null
+  token: null
+circuit_breakers: null
