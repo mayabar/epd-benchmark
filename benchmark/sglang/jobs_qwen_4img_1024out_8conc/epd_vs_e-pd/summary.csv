@@ -1,0 +1,5 @@
+setup,rate,requests,e2e_mean_ms,ttft_mean_ms,tpot_mean_ms,log
+e-pd,0.2,128,14456.13,2007.94,25.59,e-pd/r0.2-t128-in128-out128-img4/log1.log
+e-pd,0.5,128,19180.63,2250.87,34.11,e-pd/r0.5-t128-in128-out128-img4/log1.log
+e-pd,1.0,128,19113.05,2180.71,34.41,e-pd/r1-t128-in128-out128-img4/log1.log
+e-pd,2.0,128,19327.06,2279.29,35.23,e-pd/r2-t128-in128-out128-img4/log1.log

@@ -1,0 +1,13 @@
+setup,rate,requests,e2e_mean_ms,ttft_mean_ms,tpot_mean_ms,log
+epd,0.2,128,707.4,487.25,3.46,epd/r0.2-t128-in128-out128-img4/log1.log
+epd,0.5,128,735.71,500.21,3.69,epd/r0.5-t128-in128-out128-img4/log1.log
+epd,0.8,128,752.76,508.29,3.91,epd/r0.8-t128-in128-out128-img4/log1.log
+epd,1.0,128,761.83,505.3,4.05,epd/r1-t128-in128-out128-img4/log1.log
+epd,1.5,128,788.82,509.75,4.5,epd/r1.5-t128-in128-out128-img4/log1.log
+epd,2.0,128,843.81,536.13,4.84,epd/r2-t128-in128-out128-img4/log1.log
+e-pd,0.2,128,1223.59,995.54,3.61,e-pd/r0.2-t128-in128-out128-img4/log1.log
+e-pd,0.5,128,1250.1,1000.01,3.95,e-pd/r0.5-t128-in128-out128-img4/log1.log
+e-pd,0.8,128,1336.43,1050.24,4.77,e-pd/r0.8-t128-in128-out128-img4/log1.log
+e-pd,1.0,128,1356.09,1044.69,5.28,e-pd/r1-t128-in128-out128-img4/log1.log
+e-pd,1.5,128,1438.47,1075.81,6.14,e-pd/r1.5-t128-in128-out128-img4/log1.log
+e-pd,2.0,128,1613.26,1140.62,8.33,e-pd/r2-t128-in128-out128-img4/log1.log

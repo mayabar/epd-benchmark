@@ -68,13 +68,13 @@ import run_tests as rt
 # NODE1 = "gf2a19e"  # epd pod (4 GPU) OR pd/decode pod (4 GPU) -- never both at once
 # NODE2 = "g13bc90"  # e/encode pod -- taken over by another namespace (8/8 GPUs used)
 # node with free GPUs; the deployments' nodeSelectors must match these
-# g11d5e0 filled up (8/8 GPUs used) -- moved pd/decode to g1251ac
-NODE1 = "g1251ac"  # epd pod (1 GPU) OR pd/decode pod (1 GPU) -- never both at once
+# g11d5e0 / g1251ac / g121e9c were used while gf2a19e was full; gf2a19e is free again (2026-10-11)
+NODE1 = "gf2a19e"  # epd pod (1 GPU) OR pd/decode pod (1 GPU) -- never both at once
 NODE2 = "gc37d06"  # e/encode pod (1 GPU) -- must differ from NODE1
 NODE1_GPUS = 1
 NODE2_GPUS = 1
 
-MODEL = "Qwen/Qwen3-VL-32B-Instruct"  # must match the model the stacks serve, or warmup gets 404
+MODEL = "moonshotai/Kimi-VL-A3B-Instruct"  # must match the model the stacks serve, or warmup gets 404
 
 RESTART_CONFIG = {
     # "epd": {

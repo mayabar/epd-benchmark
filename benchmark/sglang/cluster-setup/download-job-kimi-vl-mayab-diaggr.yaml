@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: model-download-kimi-vl
+  namespace: mayab-diaggr
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 3600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: download
+          image: docker.io/vllm/vllm-openai@sha256:ed3c505d2cf4b62b0ca8d0b87591bcb6fbff2a3abcc6d25732343e19b4d74f09
+          command: ["/bin/bash", "-c", "set -e; df -h /model-cache; du -sh /model-cache/hub/* 2>/dev/null || true; avail=$(df -k --output=avail /model-cache | tail -1); [ $avail -gt 41943040 ] || { echo 'ERROR: less than 40 GiB free on /model-cache' >&2; exit 1; }; hf download moonshotai/Kimi-VL-A3B-Instruct; du -sh /model-cache/hub/models--moonshotai--Kimi-VL-A3B-Instruct; df -h /model-cache"]
+          env:
+            - name: HF_HOME
+              value: /model-cache
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: llm-d-hf-token
+                  key: HF_TOKEN
+          resources:
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+          volumeMounts:
+            - name: model-cache
+              mountPath: /model-cache
+      volumes:
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: e-pd-disaggregation-nvidia-gpu-vllm-model-cache
