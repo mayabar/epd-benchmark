@@ -15,8 +15,11 @@ Writes to epd_vs_e-pd/ (next to this script):
 
 Usage (from anywhere):
   uv run benchmark/sglang/jobs_4img_8conc/plot_epd_vs_e-pd.py
+  # same graphs without some rates, into a sub folder of epd_vs_e-pd/:
+  uv run .../plot_epd_vs_e-pd.py --exclude-rate 1.5 --out epd_vs_e-pd/without_r1.5
 """
 
+import argparse
 import csv
 import re
 from pathlib import Path
@@ -127,20 +130,28 @@ def plot(stem: str, line: str, title: str, data: dict[str, list[dict]], out: Pat
 
 
 def main() -> None:
-    data = {setup: load(setup) for setup, *_ in SERIES}
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--exclude-rate", type=float, action="append", default=[],
+                    help="request rate to leave out of the graphs and summary.csv (repeatable)")
+    ap.add_argument("--out", type=Path, default=OUT,
+                    help="output folder, relative to this script's folder (default: epd_vs_e-pd)")
+    args = ap.parse_args()
+    out = ROOT / args.out
+
+    data = {setup: [r for r in load(setup) if r["rate"] not in args.exclude_rate] for setup, *_ in SERIES}
     if not any(data.values()):
         raise SystemExit(f"no finished bench_serving results under {ROOT}")
-    OUT.mkdir(exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
     for stem, line, title in METRICS:
-        plot(stem, line, title, data, OUT / f"{stem}_comparison.png")
-    with open(OUT / "summary.csv", "w", newline="") as f:
+        plot(stem, line, title, data, out / f"{stem}_comparison.png")
+    with open(out / "summary.csv", "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["setup", "rate", "requests", "e2e_mean_ms", "ttft_mean_ms", "tpot_mean_ms", "log"])
         for setup, *_ in SERIES:
             for r in sorted(data[setup], key=lambda r: (r["rate"], r["log"])):
                 w.writerow([setup, r["rate"], int(r["Successful requests"]),
                             *(r[line] for _, line, _ in METRICS), r["log"]])
-    print(f"wrote {OUT}/{{e2e,ttft,tpot}}_comparison.png and summary.csv")
+    print(f"wrote {out}/{{e2e,ttft,tpot}}_comparison.png and summary.csv")
     print(f"{'setup':5} {'rate':>4} {'E2E s':>7} {'TTFT s':>7} {'TPOT ms':>8}  log")
     for setup, *_ in SERIES:
         for r in sorted(data[setup], key=lambda r: (r["rate"], r["log"])):
